@@ -471,7 +471,7 @@ const crestHTML=t=>ART['crest-'+t]?`<img src="${ART['crest-'+t]}" alt="${TEAM[t]
 function defaults(){return{
   rooms:['Living Room','His Office','Her Office'],
   base:33,min:15,max:55,whim:0,
-  voiceOn:true,voice:'',rate:0.85,pitch:0.7,
+  voiceOn:false,voice:'',rate:0.85,pitch:0.7,vol:0.6,audio2:true,
   deals:[
    {id:uid(),name:"Demon's Whisper",cost:1,team:'both',convert:false,desc:'A small hint for your current clue.'},
    {id:uid(),name:'Séance',cost:1,team:'both',convert:false,desc:'Ask the demons one yes-or-no question.'},
@@ -499,6 +499,7 @@ function fresh(settings){return{screen:'landing',page:0,players:[],rolled:false,
   log:[],phase:{humans:0,vampires:0},winner:null,heartBy:null,settings:settings||defaults()}}
 function load(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s&&s.settings)return s}}catch(e){}return null}
 let S=load()||fresh();
+if(!S.settings.audio2){S.settings.voiceOn=false;S.settings.vol=0.6;S.settings.audio2=true}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
 const UI={sel:[],team:'',finders:{},deal:'',target:'',note:'',picked:null,rmArm:null,resetArm:false,turning:false};
@@ -578,7 +579,7 @@ function sfx(kind){const ac=acInit();if(!ac)return;ac.resume();const t=ac.curren
 const NAV=[['landing','Graveyard'],['grimoire','Grimoire'],['rules','Rules'],['setup','Players'],['board','Hunt'],['scores','Scorecards']];
 function go(s){hush();S.screen=s;save();render();window.scrollTo(0,0)}
 function renderBar(){$('#gmbar').innerHTML=NAV.map(([k,l])=>`<button data-action="nav" data-to="${k}" aria-current="${S.screen===k}">${l}</button>`).join('')+
-  `<button data-action="ledger">Deal Ledger</button><button data-action="fullscreen">Full screen</button>`}
+  `<button data-action="music" aria-pressed="${MUS.on}">${MUS.on?'Music on':'Music off'}</button><button data-action="ledger">Deal Ledger</button><button data-action="fullscreen">Full screen</button>`}
 function render(){
   document.querySelectorAll('.screen').forEach(s=>s.hidden=true);
   const el=$('#s-'+S.screen);if(el)el.hidden=false;
@@ -622,7 +623,7 @@ function rGrim(){const i=S.page,pp=parts(i);
   <div class="grim" id="grim"><div class="pg left" id="pgL">${pp.left}</div><div class="pg right" id="pgR">${pp.right}</div></div>
   <div class="row grim-ctrl">
     <button class="btn" data-action="page" data-d="-1" ${i===0?'disabled':''}>Previous page</button>
-    <div class="row"><button class="btn" data-action="read-page">Read this page</button><button class="btn" data-action="read-all">Read the whole story</button><button class="btn ghost" data-action="hush">Stop</button></div>
+    ${S.settings.voiceOn?`<div class="row"><button class="btn" data-action="read-page">Read this page</button><button class="btn" data-action="read-all">Read the whole story</button><button class="btn ghost" data-action="hush">Stop</button></div>`:''}
     <div class="row"><div class="dots">${PAGES.map((_,k)=>`<span class="${k===i?'on':''}"></span>`).join('')}</div>
     ${i<PAGES.length-1?`<button class="btn primary" data-action="page" data-d="1">Turn the page</button>`:`<button class="btn primary" data-action="nav" data-to="rules">The rules of the wager</button>`}</div>
   </div>`}
@@ -635,7 +636,7 @@ function turn(d){return new Promise(res=>{const ni=S.page+d;if(ni<0||ni>=PAGES.l
   leaf.style.left=src.offsetLeft+'px';leaf.style.width=src.offsetWidth+'px';
   leaf.innerHTML=`<div class="face front pg ${d>0?'right':'left'}">${src.innerHTML}</div><div class="face backf pg ${d>0?'left':'right'}">${d>0?np.left:np.right}</div>`;
   if(d>0)R.innerHTML=np.right;else L.innerHTML=np.left;
-  book.appendChild(leaf);void leaf.offsetWidth;leaf.classList.add('go');
+  book.appendChild(leaf);void leaf.offsetWidth;leaf.classList.add('go');sfx('turn');
   setTimeout(()=>{S.page=ni;save();UI.turning=false;rGrim();res(true)},1020)})}
 async function readFrom(i){if(S.screen!=='grimoire')return;if(i!==S.page)await turn(i-S.page);
   speak(PAGES[i].title+'. '+PAGES[i].text,()=>{if(readingAll&&i<PAGES.length-1)setTimeout(()=>{if(readingAll&&S.screen==='grimoire')readFrom(i+1)},600);else readingAll=false})}
@@ -673,7 +674,7 @@ function rRules(){const r=S.settings.rooms;const ds=S.settings.deals;
     <section class="prices"><h3>The Demons' Price List</h3><p class="label" style="margin:0 0 10px">Each dot is one token.</p>
       <div class="price-cols">${col('humans','HUMANS ONLY','hum')}${col('both','EITHER TEAM','')}${col('vampires','VAMPIRES ONLY','vam')}</div></section>
   </div>
-  <div class="row" style="justify-content:center;margin-top:26px"><button class="btn" data-action="read-rules">Read the rules aloud</button><button class="btn primary" data-action="nav" data-to="setup">Summon the players</button></div>`}
+  <div class="row" style="justify-content:center;margin-top:26px">${S.settings.voiceOn?'<button class="btn" data-action="read-rules">Read the rules aloud</button>':''}<button class="btn primary" data-action="nav" data-to="setup">Summon the players</button></div>`}
 function rulesSpeech(){const r=S.settings.rooms;return `The rules of the wager. Humans: claim the Heart of the Angel and break the curse. Vampires: claim the Heart and walk in daylight forever. The hunt moves through three rooms: the ${r[0]}, the ${r[1]}, and the ${r[2]}. Your clues are marked in your team's colour. Every clue hides a code. Bring it to the demons for your next piece. Twenty tokens are hidden in this house. Trade them with the demons for powers and hints. But some tokens are cursed. Choose your deals wisely.`}
 
 /* ---------- setup ---------- */
@@ -685,8 +686,7 @@ function rSetup(){const ps=S.players;const n=ps.length;
       <p class="label" style="margin:0">Add 6 to 10 players.</p>
       <form id="addf" class="row" style="margin-top:12px"><input type="text" id="newname" placeholder="Player name" autocomplete="off" style="flex:1"><button class="btn" type="submit">Add</button></form>
       <ul class="namelist">${ps.map(p=>`<li>${esc(p.name)}<button data-action="rm-player" data-id="${p.id}" aria-label="Remove ${esc(p.name)}">×</button></li>`).join('')}</ul>
-      <div class="row" style="margin-top:18px"><button class="btn primary" data-action="roll" ${n<2?'disabled':''}>${S.rolled?'Roll again':'Roll the bones'}</button>
-      <label class="row label" style="gap:6px"><input type="checkbox" id="voiceOn" ${S.settings.voiceOn?'checked':''}> Announce each roll</label></div>
+      <div class="row" style="margin-top:18px"><button class="btn primary" data-action="roll" ${n<2?'disabled':''}>${S.rolled?'Roll again':'Roll the bones'}</button></div>
       ${n&&n<6?`<p class="warn">The game is built for 6 to 10 players. You have ${n}.</p>`:''}
     </div>
     <div class="panel">
@@ -698,7 +698,6 @@ function rSetup(){const ps=S.players;const n=ps.length;
     </div>
   </div>`;
   $('#addf').onsubmit=e=>{e.preventDefault();const v=$('#newname').value.trim();if(!v)return;S.players.push({id:uid(),name:v,team:null});S.rolled=false;save();rSetup();$('#newname').focus()};
-  $('#voiceOn').onchange=e=>{S.settings.voiceOn=e.target.checked;save()};
 }
 let rolling=false;
 async function roll(){if(rolling)return;rolling=true;S.rolled=false;const ps=S.players;const n=ps.length;
@@ -706,8 +705,8 @@ async function roll(){if(rolling)return;rolling=true;S.rolled=false;const ps=S.p
   const order=ps.map((_,i)=>i).sort(()=>Math.random()-.5);const assign={};order.forEach((idx,k)=>assign[ps[idx].id]=k<hc?'humans':'vampires');
   ps.forEach(p=>p.team=null);rSetup();
   for(const p of ps){const li=document.querySelector(`#rolls li[data-id="${p.id}"] .res`);if(!li)continue;
-    let k=0;const iv=setInterval(()=>{li.textContent=k%2?'HUMAN':'VAMPIRE';li.className='res spin '+(k%2?'hum':'vam');k++},110);
-    await sleep(1000);clearInterval(iv);p.team=assign[p.id];li.className='res '+TEAM[p.team].cls;li.textContent=TEAM[p.team].one.toUpperCase();
+    let k=0;const iv=setInterval(()=>{li.textContent=k%2?'HUMAN':'VAMPIRE';li.className='res spin '+(k%2?'hum':'vam');k++;sfx('tick')},110);
+    await sleep(1000);clearInterval(iv);p.team=assign[p.id];li.className='res '+TEAM[p.team].cls;li.textContent=TEAM[p.team].one.toUpperCase();sfx(p.team==='humans'?'safe':'cursed');
     if(S.settings.voiceOn){await new Promise(r=>speak(`${p.name}. ${TEAM[p.team].one}.`,r))}else await sleep(350)}
   S.rolled=true;save();rolling=false;await sleep(600);if(S.screen==='setup')rSetup()}
 
@@ -808,8 +807,8 @@ async function showReveal(ev,deal){const box=$('#rv');const ov=$('#reveal');
   ov.hidden=false;
   if(S.settings.voiceOn)speak('The demons consider your offer.');
   await sleep(1600);
-  for(let i=0;i<ev.tokens.length;i++){$('#rc'+i).classList.add('flip');await sleep(1300);if(ev.results[i])$('#rc'+i).classList.add('shake')}
-  await sleep(400);$('#vd').classList.add('show');
+  for(let i=0;i<ev.tokens.length;i++){$('#rc'+i).classList.add('flip');await sleep(700);sfx(ev.results[i]?'cursed':'safe');await sleep(600);if(ev.results[i])$('#rc'+i).classList.add('shake')}
+  await sleep(400);$('#vd').classList.add('show');if(ev.cursed===2)sfx('doom');
   let det='';const res=$('#vres');const done=`<button class="btn primary" data-action="close-reveal">Done</button>`;
   if(!ev.convert){
     if(ev.cursed===0)det=esc(deal.desc);
@@ -870,9 +869,10 @@ function ledger(){const st=S.settings;
   <div class="ledger-sec"><h3>Your artwork</h3><p class="label" style="margin-top:0">Upload your own designs. They are kept in this browser, so upload them on the laptop you'll use at the party.</p>
     <div class="art-grid">${ART_SLOTS.map(([k,l])=>`<div class="art"><div class="th">${ART[k]?`<img src="${ART[k]}" alt="">`:'Default'}</div><div><div class="nm">${l}</div><div class="row"><label class="btn small">Upload<input type="file" accept="image/*" data-art="${k}" hidden></label>${ART[k]?`<button class="btn ghost small" data-action="rm-art" data-k="${k}">Remove</button>`:''}</div></div></div>`).join('')}</div>
     <p class="label" id="art-msg"></p></div>
-  <div class="ledger-sec"><h3>Narrator</h3><div class="fgrid"><label class="full"><span class="label">Voice</span><select id="vsel"><option value="">Automatic (deepest English voice found)</option>${vs.map(v=>`<option ${st.voice===v.name?'selected':''}>${esc(v.name)}</option>`).join('')}</select></label>
+  <div class="ledger-sec"><h3>Music</h3><div class="row"><label class="row" style="gap:10px"><span class="label">Volume</span><input type="range" id="mvol" min="0" max="1" step="0.05" value="${vol()}"></label><button class="btn small" data-action="music">${MUS.on?'Stop the music':'Play the music'}</button></div></div>
+  <div class="ledger-sec"><h3>Narrator voice (optional)</h3><div class="fgrid"><label class="full"><span class="label">Voice</span><select id="vsel"><option value="">Automatic (deepest English voice found)</option>${vs.map(v=>`<option ${st.voice===v.name?'selected':''}>${esc(v.name)}</option>`).join('')}</select></label>
     <label><span class="label">Speed</span><input type="number" data-st="rate" step="0.05" min="0.5" max="1.5" value="${st.rate}"></label><label><span class="label">Pitch</span><input type="number" data-st="pitch" step="0.05" min="0" max="2" value="${st.pitch}"></label>
-    <label class="row full"><input type="checkbox" id="vOn" ${st.voiceOn?'checked':''}> Speak deal results and team rolls</label></div>
+    <label class="row full"><input type="checkbox" id="vOn" ${st.voiceOn?'checked':''}> Use the narrator voice (adds read-aloud buttons to the story and rules)</label></div>
     <button class="btn small" data-action="test-voice">Test the voice</button></div>
   <div class="ledger-sec"><h3>Backup</h3><p class="label" style="margin-top:0">The game saves itself in this browser. Copy a backup now and then if you're nervous. Artwork is not included.</p>
     <div class="row"><button class="btn small" data-action="copy-backup">Copy backup</button><span id="bk-msg" class="label"></span></div>
@@ -889,7 +889,8 @@ function ledger(){const st=S.settings;
     else if(t.dataset.f){const id=t.closest('.deal-row').dataset.did;const d=st.deals.find(x=>x.id===id);const f=t.dataset.f;d[f]=f==='convert'?t.checked:f==='cost'?Number(t.value):t.value}
     else if(t.id==='tw')st.twists=t.value.split('\n').map(s=>s.trim()).filter(Boolean)
     else if(t.id==='vsel')st.voice=t.value
-    else if(t.id==='vOn')st.voiceOn=t.checked;
+    else if(t.id==='vOn')st.voiceOn=t.checked
+    else if(t.id==='mvol'){st.vol=Number(t.value);musicVol()}
     save()}}
 
 /* ---------- victory ---------- */
@@ -913,8 +914,9 @@ function rVictory(){const t=S.winner;if(!t){go('board');return}const v=VIC[t];
       <ul>${v.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>
       <div class="names">VICTORS: ${winners.map(esc).join(' · ')}</div>
       <div class="names" style="opacity:.75">${t==='humans'?'SEALED IN THE GRAVE':'THE HERD'}: ${losers.map(esc).join(' · ')||'none'}</div>
-      <div class="row no-print" style="justify-content:center"><button class="btn ghost" data-action="speak-vic">Narrate</button><button class="btn primary" data-action="nav" data-to="scores">Reveal the scorecards</button></div></div>
+      <div class="row no-print" style="justify-content:center">${S.settings.voiceOn?'<button class="btn ghost" data-action="speak-vic">Narrate</button>':''}<button class="btn primary" data-action="nav" data-to="scores">Reveal the scorecards</button></div></div>
   </div>`;
+  sfx(t==='humans'?'dawn':'night');
   if(S.settings.voiceOn)setTimeout(()=>{if(S.screen==='victory')speak(v.title+'. '+v.lines.join(' '))},1200)}
 
 /* ---------- scoring ---------- */
@@ -993,7 +995,8 @@ body{background:#fff;padding:20px}.sheet{margin-bottom:24px}</style></head><body
 document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action;
   switch(a){
   case 'nav':go(b.dataset.to);break;
-  case 'open-book':S.page=0;go('grimoire');if(S.settings.voiceOn){readingAll=true;setTimeout(()=>readFrom(0),500)}break;
+  case 'open-book':S.page=0;musicStart();go('grimoire');if(S.settings.voiceOn){readingAll=true;setTimeout(()=>readFrom(0),500)}break;
+  case 'music':MUS.on?musicStop():musicStart();break;
   case 'page':hush();turn(Number(b.dataset.d));break;
   case 'read-page':readingAll=false;readFrom(S.page);break;
   case 'read-all':readingAll=true;readFrom(S.page);break;
