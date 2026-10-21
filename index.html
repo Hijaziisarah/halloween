@@ -280,6 +280,17 @@ textarea{width:100%;resize:vertical}
 .vt input.secret{font-size:2rem;letter-spacing:.35em;text-align:center;width:min(420px,100%);background:var(--night)}
 .vt .err{color:#ff5a6e;min-height:1.6em;margin-top:10px;font-size:1.15rem}
 
+/* room clocks */
+.vbox .clock{font-family:var(--f-body);font-variant-numeric:tabular-nums;font-size:.95rem;color:var(--bone)}
+.vbox .clock.fast{color:var(--moss)}
+.vbox .clock.late{color:var(--ash)}
+.vt .timer{display:inline-flex;align-items:baseline;gap:.5em;margin-top:10px;font-family:var(--f-label);letter-spacing:.08em;color:var(--ash);font-size:1.1rem}
+.vt .timer b{font-family:var(--f-body);font-size:2.4rem;font-variant-numeric:tabular-nums;color:var(--bone);letter-spacing:0;font-weight:600}
+.vt .timer b.late{color:var(--ash)}
+.vt .speed{font-family:var(--f-label);letter-spacing:.06em;font-size:1.2rem;margin-top:8px}
+.vt .speed.fast{color:var(--moss)}
+.vt .speed.slow{color:var(--ash)}
+
 /* clue picker + ledger tabs */
 .cluepick{display:flex;flex-direction:column;gap:6px;margin:10px 0;max-height:40vh;overflow:auto}
 .cluepick label{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:var(--night);border:1px solid var(--edge);border-radius:8px;padding:.5em .7em;cursor:pointer}
@@ -417,21 +428,31 @@ textarea{width:100%;resize:vertical}
 .pc-result.won{color:#7a5a12;background:rgba(226,170,76,.22)}
 .pc-result.lost{color:#6b1020}
 .pc-score{display:flex;align-items:center;justify-content:center;gap:.6em;margin:.55em 0 .35em;border-top:1px solid rgba(60,30,10,.3);border-bottom:1px solid rgba(60,30,10,.3);padding:.35em 0;font-variant-numeric:tabular-nums}
-.pc-score .rank{font-family:var(--f-body);font-weight:600;letter-spacing:-.02em;font-size:3.4em;line-height:1;color:var(--wine)}
+.pc-score .rank{font-family:var(--f-display);font-size:3.4em;line-height:1;color:var(--wine)}
 .pc-line{font-style:italic;text-align:center;margin:.3em 0 .5em;font-size:1.02em}
 .pc-split{text-align:center;font-family:var(--f-label);letter-spacing:.06em;font-size:.9em;color:#6b4a2a;margin:-.15em 0 .45em}
-.pc-split b{color:#4a1018}
+.pc-split b{color:#4a1018;font-family:var(--f-body);font-weight:600;letter-spacing:0}
 .pc-break{display:grid;grid-template-columns:1fr 1fr;gap:.2em 1em;font-size:.82em;margin-top:.2em}
 .pc-break h4{margin:0 0 .15em;font-family:var(--f-label);font-weight:400;letter-spacing:.12em;color:var(--sepia);font-size:.9em;border-bottom:1px solid rgba(60,30,10,.3)}
 .pc-break ul{list-style:none;margin:0;padding:0}
 .pc-break li{display:flex;justify-content:space-between;gap:.5em;padding:.05em 0}
 .pc-break li b{font-variant-numeric:tabular-nums;color:#4a1018}
+.pc-break li small{display:block;font-size:.8em;line-height:1.2;color:#6b4a2a;font-style:italic}
+.pc-hon{margin-top:auto;padding-top:.35em;font-size:.78em;color:#6b4a2a;line-height:1.3}
+.pc-hon b{font-family:var(--f-label);font-weight:400;color:#4a1018;font-size:1.08em}
+.pc-hon .lbl{font-family:var(--f-label);letter-spacing:.12em;color:var(--sepia);font-size:.95em}
+.pc-hon ul{list-style:none;margin:.1em 0 0;padding:0;display:flex;flex-direction:column;gap:.05em}
+.pcard.fit2 .pc-hon ul{display:block}.pcard.fit2 .pc-hon li{display:inline}.pcard.fit2 .pc-hon li + li::before{content:" · "}.pcard.fit2 .pc-hon i{display:none}
+.pcard.fit3 .pc-name{font-size:2.8em;margin:.05em 0}.pcard.fit3 .pc-result{font-size:1.5em;margin-top:.25em}.pcard.fit3 .pc-score{margin:.35em 0 .25em;padding:.2em 0}.pcard.fit3 .pc-score .rank{font-size:2.8em}
+.pcard.fit4 .pc-break{font-size:.76em}
+.pcard.fit5 .pc-break li small{display:none}
+.pcard.fit1 .pc-line{display:none}
 .pc-break li.none{color:#8a6a44;font-style:italic}
 .pc-ach{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.2em;font-size:.88em}
 .pc-ach b{font-family:var(--f-label);font-weight:400;color:#4a1018}
 .pc-stats,.pc-foot{margin-top:auto;padding-top:.4em;text-align:center;font-size:.78em;color:#6b4a2a;font-variant-numeric:tabular-nums}
 .pc-foot{font-family:var(--f-label);letter-spacing:.05em}
-.tc{border-radius:6px;padding:.45em .6em;margin-bottom:.5em;border:1px solid rgba(60,30,10,.3)}
+.tc{border-radius:6px;padding:.4em .6em;margin-bottom:.4em;border:1px solid rgba(60,30,10,.3)}
 .tc.win{border:2px solid #b8862e;background:rgba(226,170,76,.18)}
 .tc-head{display:flex;align-items:center;gap:.5em}
 .tc-head .crest{width:2.8em;height:2.8em}
@@ -439,7 +460,7 @@ textarea{width:100%;resize:vertical}
 .tc.win .tag{color:#7a5a12;font-weight:600}
 .tc.lose .tag{color:#6b1020;font-weight:600}
 .tc h3{font-size:2.1em;line-height:1;color:#4a1018}
-.tc-stats{font-size:.85em;color:#6b4a2a;margin:.2em 0 .3em}
+.tc-stats{font-size:.85em;color:#6b4a2a;margin:.1em 0 .2em}
 .tc-list{list-style:none;margin:0;padding:0;font-size:1em;display:grid;grid-template-columns:1fr 1fr;column-gap:1em}
 .tc-list li{display:flex;justify-content:space-between;gap:.4em;min-width:0;border-bottom:1px dotted rgba(60,30,10,.3);padding:.06em 0;font-variant-numeric:tabular-nums}
 .tc-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -604,7 +625,7 @@ const crestHTML=t=>ART['crest-'+t]?`<img src="${ART['crest-'+t]}" alt="${TEAM[t]
 function defaults(){return{
   rooms:['Living Room','His Office','Her Office'],
   base:33,min:15,max:55,whim:0,
-  voiceOn:false,voice:'',rate:0.85,pitch:0.7,vol:0.6,audio2:true,card:'4x6',
+  voiceOn:false,voice:'',rate:0.85,pitch:0.7,vol:0.6,audio2:true,card:'4x6',speedMins:15,speedPts:2,
   vaults:['Black Light','Skeleton Key','The Heart of the Angel'].map(item=>({item,humans:{answer:'',clues:[]},vampires:{answer:'',clues:[]}})),
   deals:[
    {id:uid(),name:"Demon's Whisper",cost:1,team:'both',convert:false,desc:'A small hint for your current clue.'},
@@ -637,7 +658,7 @@ if(!S.settings.audio2){S.settings.voiceOn=false;S.settings.vol=0.6;S.settings.au
 function migrate(){const st=S.settings;if(!Array.isArray(st.vaults))st.vaults=defaults().vaults;
   while(st.vaults.length<st.rooms.length)st.vaults.push({item:'',humans:{answer:'',clues:[]},vampires:{answer:'',clues:[]}});
   st.vaults.forEach(v=>['humans','vampires'].forEach(t=>{if(!v[t])v[t]={answer:'',clues:[]};if(!Array.isArray(v[t].clues))v[t].clues=[]}));
-  if(!st.card)st.card='4x6'}
+  if(!st.card)st.card='4x6';if(st.speedMins==null)st.speedMins=15;if(st.speedPts==null)st.speedPts=2}
 migrate();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -801,6 +822,7 @@ function rRules(){const r=S.settings.rooms;const ds=S.settings.deals;
       <li>Solve a clue and bring the answer to the demons. They give you one piece of the room's code: a letter, or a piece of a puzzle.</li>
       <li>Collect every piece in the room, put them together, and give the demons the room's final answer.</li>
       <li>Get it right and your team's box for that room opens. Inside is the item you need for the next room.</li>
+      ${S.settings.speedMins>0&&S.settings.speedPts>0?`<li>The clock is ticking. Open a box within ${S.settings.speedMins} minutes of entering the room and every member of your team earns ${S.settings.speedPts} bonus point${S.settings.speedPts==1?'':'s'}.</li>`:''}
       <li>The first team to open its final box claims the Heart of the Angel.</li></ol></section>
     <section><h3>Tokens &amp; Deals</h3><ul>
       <li>20 tokens are hidden around the house.</li>
@@ -919,7 +941,8 @@ function logText(e){const n=id=>esc(nm(id));
   switch(e.type){
    case 'start':return 'The hunt begins.';
    case 'clue':return `${e.pid?n(e.pid):'The '+TEAM[e.team].name} solved ${e.ci!=null?'clue '+(e.ci+1):'a clue'}${e.pid?' for the '+TEAM[e.team].name:''} in the ${esc(e.room)}.`;
-   case 'advance':return `The ${TEAM[e.team].name} opened the ${esc(e.room)} box${e.pid?' ('+n(e.pid)+' gave the answer)':''}.`;
+   case 'advance':{const ri=e.ri!=null?e.ri:S.settings.rooms.indexOf(e.room);const a=ri>=0?roomStart(e.team,ri):null;const ms=a!=null?e.t-a:null;
+     return `The ${TEAM[e.team].name} opened the ${esc(e.room)} box${ms!=null?' in '+fmtDur(ms)+(isFast(ms)&&Number(S.settings.speedPts)?' (speed bonus)':''):''}${e.pid?' · '+n(e.pid)+' gave the answer':''}.`}
    case 'bonus':return `${n(e.pid)} ${e.pts>=0?'earned':'lost'} ${Math.abs(e.pts)} point${Math.abs(e.pts)===1?'':'s'}${e.note?': '+esc(e.note):''}.`;
    case 'deal':{const res=['completed','through, BUT…','horribly wrong'][e.cursed];const toks=e.tokens.map((t,i)=>'#'+t+(e.finders&&e.finders[i]?' ('+n(e.finders[i])+')':'')).join(' + ');
      return `The ${TEAM[e.team].name} traded ${toks} for ${esc(e.dealName)}${e.target?' on '+n(e.target):''}. Deal ${res}${e.twist?' ('+esc(e.twist)+')':''}${e.note?' · “'+esc(e.note)+'”':''}`}
@@ -982,6 +1005,15 @@ function item3dHTML(ri){const src=ART['item-'+ri];const last=ri>=S.settings.room
   const one=src?`<img src="${src}" alt="">`:last?`<svg viewBox="-44 -30 88 70" aria-hidden="true"><path d="${HEART}" fill="#c4203a" stroke="#f6c870" stroke-width="3"/></svg>`:LIGHT_SVG;
   let out='';const N=14;for(let i=0;i<N;i++){const z=((i-(N-1)/2)*1.3).toFixed(1);out+=`<div class="layer ${i===N-1?'front':i===0?'':'mid'}" style="transform:translateZ(${z}px)">${one}</div>`}
   return `<div class="spin3d">${out}</div>`}
+const fmtDur=ms=>{const t=Math.max(0,Math.floor(ms/1000)),h=Math.floor(t/3600),m=Math.floor(t%3600/60),sec=t%60;return(h?h+':'+String(m).padStart(2,'0'):String(m))+':'+String(sec).padStart(2,'0')};
+const speedMs=()=>Math.max(0,Number(S.settings.speedMins)||0)*60000;
+function roomStart(t,ri){if(ri===0){const st=S.log.find(e=>e.type==='start');return st?st.t:null}const prev=advOf(t,ri-1);return prev?prev.t:null}
+function roomTime(t,ri){const a=roomStart(t,ri);if(a==null)return null;const adv=advOf(t,ri);return adv?{ms:adv.t-a,done:true}:{ms:Date.now()-a,done:false,since:a}}
+const isFast=ms=>speedMs()>0&&ms<=speedMs();
+function clockHTML(t,ri,cls){const rt=roomTime(t,ri);if(!rt)return '';
+  if(rt.done)return `<span class="${cls} ${isFast(rt.ms)?'fast':''}">${fmtDur(rt.ms)}</span>`;
+  return `<span class="${cls} ${speedMs()&&rt.ms>speedMs()?'late':''}" data-since="${rt.since}">${fmtDur(rt.ms)}</span>`}
+setInterval(()=>{document.querySelectorAll('[data-since]').forEach(el=>{const ms=Date.now()-Number(el.dataset.since);el.textContent=fmtDur(ms);el.classList.toggle('late',speedMs()>0&&ms>speedMs())})},1000);
 const cluesIn=(t,ri,pid)=>S.log.filter(e=>e.type==='clue'&&e.team===t&&clueRoom(e)===ri&&(pid===undefined||e.pid===pid));
 function vaultSideHTML(t,ri){const room=S.settings.rooms[ri];const n=cluesIn(t,ri).length,total=vaultOf(ri,t).clues.length;
   return `<div class="label">CLUES FOUND</div><h3 class="${TEAM[t].cls}">${esc(room)}</h3>
@@ -992,13 +1024,16 @@ function vaultSide(){if(!UI.vault)return;const el=$('#vt-side');if(el)el.innerHT
 function vaultTiles(t){const ph=S.phase[t];
   return `<div class="vaults">${S.settings.rooms.map((r,i)=>{const st=i<ph?'done':i===ph?'now':'locked';const total=vaultOf(i,t).clues.length,found=cluesIn(t,i).length;
     const label=st==='done'?'Opened':st==='locked'?'Sealed':total?`${found}/${total} clues`:found?`${found} clue${found===1?'':'s'}`:'Open now';
-    return `<button class="vbox ${st}" data-action="vault" data-team="${t}" data-ri="${i}" aria-label="${esc(r)} box, ${label}"><span class="ico">${boxArt(t,i)}</span><span class="rm-name">${esc(r)}</span><span class="st">${label}</span></button>`}).join('')}</div>`}
+    return `<button class="vbox ${st}" data-action="vault" data-team="${t}" data-ri="${i}" aria-label="${esc(r)} box, ${label}"><span class="ico">${boxArt(t,i)}</span><span class="rm-name">${esc(r)}</span><span class="st">${label}</span>${st==='locked'?'':clockHTML(t,i,'clock')}</button>`}).join('')}</div>`}
 function cheerText(t,ri){const rooms=S.settings.rooms,last=ri>=rooms.length-1,item=((S.settings.vaults[ri]||{}).item||'').trim();
   return last?`Team ${TEAM[t].name} opened the final box! ${item?'Inside lies '+item+'.':''}`:`Team ${TEAM[t].name} cleared the ${rooms[ri]}! They have now unlocked ${rooms[ri+1]}.${item?' Their reward: '+item+'.':''}`}
+function speedHTML(t,ri){const rt=roomTime(t,ri);if(!rt||!rt.done)return '';const pts=Number(S.settings.speedPts)||0;
+  return isFast(rt.ms)&&pts?`<div class="speed fast">Cleared in ${fmtDur(rt.ms)}. Under ${fmtDur(speedMs())}: +${pts} bonus point${pts===1?'':'s'} for every ${TEAM[t].one.toLowerCase()}!</div>`
+    :`<div class="speed slow">Cleared in ${fmtDur(rt.ms)}.</div>`}
 function cheerHTML(t,ri){const rooms=S.settings.rooms,last=ri>=rooms.length-1,item=((S.settings.vaults[ri]||{}).item||'').trim();
   const sub=last?(item?`Inside lies <b>${esc(item)}</b>.`:'The last seal is broken.'):`They have now unlocked <b>${esc(rooms[ri+1])}</b>.${item?` Their reward: <b>${esc(item)}</b>. They will need it there.`:''}`;
   const claim=last&&S.winner!==t?`<button class="btn primary" data-action="vault-claim">Claim the Heart for the ${TEAM[t].name}</button>`:'';
-  return `<div class="cheer ${TEAM[t].cls}">${last?`Team ${TEAM[t].name} opened the final box!`:`Team ${TEAM[t].name} cleared the ${esc(rooms[ri])}!`}</div><p class="unlock">${sub}</p>
+  return `${speedHTML(t,ri)}<div class="cheer ${TEAM[t].cls}">${last?`Team ${TEAM[t].name} opened the final box!`:`Team ${TEAM[t].name} cleared the ${esc(rooms[ri])}!`}</div><p class="unlock">${sub}</p>
    <div class="row" style="justify-content:center;margin-top:18px">${claim}<button class="btn ${claim?'':'primary'}" data-action="close-vault">Done</button></div>`}
 const advOf=(t,ri)=>S.log.slice().reverse().find(e=>e.type==='advance'&&e.team===t&&(e.ri!=null?e.ri:S.settings.rooms.indexOf(e.room))===ri);
 function openVault(t,ri){const ph=S.phase[t],rooms=S.settings.rooms,st=ri<ph?'done':ri===ph?'now':'locked';UI.vault={t,ri,arm:false};
@@ -1012,6 +1047,7 @@ function openVault(t,ri){const ph=S.phase[t],rooms=S.settings.rooms,st=ri<ph?'do
     <div class="row" style="justify-content:center;margin-top:6px"><button class="btn ghost small" data-action="close-vault">Cancel</button><button class="btn ghost small" data-action="vault-force" id="vt-force">Open it anyway</button></div>`}
   const side=st!=='locked';$('#vt').className='vt'+(side?'':' no-side');
   $('#vt').innerHTML=`${side?`<aside class="vt-side" id="vt-side" style="--trim:${t==='humans'?'#e2aa4c':'#c4203a'}">${vaultSideHTML(t,ri)}</aside>`:''}<div class="vt-center"><div class="who">THE ${TEAM[t].name.toUpperCase()} · ROOM ${['I','II','III','IV','V'][ri]||ri+1}</div><h2 class="${TEAM[t].cls}">The ${esc(rooms[ri])}</h2>
+    ${st==='now'?`<div class="timer" id="vt-timer">TIME IN THIS ROOM ${clockHTML(t,ri,'').replace('<span','<b').replace('</span>','</b>')}${speedMs()?` <span>· BONUS UNDER ${fmtDur(speedMs())}</span>`:''}</div>`:''}
     <div class="chest ${st} ${st==='done'?'open':'zoom'}" id="chest" style="--trim:${t==='humans'?'#e2aa4c':'#c4203a'}"><div class="crays"></div><div class="cglow"></div><div class="item3d">${item3dHTML(ri)}</div><div class="lid"></div><div class="cbody"><div class="cface">${boxArt(t,ri)}</div></div></div>
     <div id="vt-main">${main}</div></div>`;
   const ov=$('#vault');ov.hidden=false;ov.scrollTop=0;
@@ -1024,10 +1060,10 @@ function tryVault(){if(!UI.vault)return;const {t,ri}=UI.vault;const v=vaultOf(ri
   inp.value='';inp.focus()}
 async function unlockVault(){if(!UI.vault)return;const {t,ri}=UI.vault;if(S.phase[t]!==ri)return;const sel=$('#vt-p');const pid=sel&&sel.value||null;
   addLog({type:'advance',team:t,room:S.settings.rooms[ri],ri,from:S.phase[t],pid});S.phase[t]=ri+1;save();
-  $('#vt-main').innerHTML='';const c=$('#chest');c.classList.remove('zoom','shake','now');void c.offsetWidth;c.classList.add('open');sfx('unlock');
+  $('#vt-main').innerHTML='';const tm=$('#vt-timer');if(tm)tm.remove();const c=$('#chest');c.classList.remove('zoom','shake','now');void c.offsetWidth;c.classList.add('open');sfx('unlock');
   await sleep(2300);if($('#vault').hidden||!UI.vault||UI.vault.t!==t||UI.vault.ri!==ri)return;
   $('#vt-main').innerHTML=cheerHTML(t,ri);requestAnimationFrame(()=>{const ch=$('#vt-main .cheer');if(ch)ch.classList.add('show')});sfx('dawn');
-  if(S.settings.voiceOn)speak(cheerText(t,ri))}
+  if(S.settings.voiceOn){const rt=roomTime(t,ri);speak(cheerText(t,ri)+(rt&&isFast(rt.ms)&&Number(S.settings.speedPts)?' And they were fast enough for the bonus.':''))}}
 function closeVault(){$('#vault').hidden=true;UI.vault=null;hush();if(S.screen==='board')rBoard()}
 
 /* ---------- modals ---------- */
@@ -1064,6 +1100,8 @@ const artSlotHTML=(k,l)=>`<div class="art"><div class="th">${ART[k]?`<img src="$
 function cluesTab(){const st=S.settings;
   return `<p class="label" style="margin:12px 0 0">For the demons' eyes only. None of this appears on the rules page. Answers ignore capitals, spaces and punctuation.</p>
   <div class="ledger-sec"><h3>Rooms, in order</h3><div class="fgrid" style="grid-template-columns:repeat(3,minmax(0,1fr))">${st.rooms.map((r,i)=>`<input type="text" data-room="${i}" value="${esc(r)}" aria-label="Room ${i+1}">`).join('')}</div>
+    <div class="fgrid" style="margin-top:14px;grid-template-columns:repeat(2,minmax(0,1fr))"><label><span class="label">Speed bonus: open a box within (minutes)</span><input type="number" min="0" step="0.5" data-st="speedMins" value="${st.speedMins}"></label><label><span class="label">Bonus points for every team member</span><input type="number" min="0" step="1" data-st="speedPts" value="${st.speedPts}"></label></div>
+    <p class="label" style="margin:6px 0 0">Each room's clock starts when the team opens the previous box (the first room starts at "Begin the hunt"). Set minutes to 0 to switch the bonus off.</p>
     <label class="row" style="gap:8px;margin-top:10px"><input type="checkbox" id="showans" ${UI.showAns?'checked':''}> Show the answers (they are hidden so the TV doesn't give them away)</label></div>
   ${st.rooms.map((r,ri)=>{const v=st.vaults[ri];return `<div class="ledger-sec"><h3>${ri+1}. ${esc(r)}</h3>
     <div class="fgrid"><label><span class="label">Item inside the box${ri<st.rooms.length-1?` (needed in ${esc(st.rooms[ri+1])})`:''}</span><input type="text" data-vi="${ri}" value="${esc(v.item)}"></label>
@@ -1156,12 +1194,13 @@ const ACH={heart:['Heartbearer','gave the final answer'],keeper:['Keymaster','ga
 /* Points. Team points go to everyone on the team at that moment; individual points are earned by the player. */
 const PTS={clue:1,token:1,keymaster:2,heart:3,snatch:2,untouched:2,box:1,win:5};
 function scores(){const start=S.log.find(e=>e.type==='start');const init=start?start.teams:{};
-  const st={};S.players.forEach(p=>st[p.id]={p,init:init[p.id]||p.team,clues:0,tok:0,cursed:0,snatch:0,sw:0,bonus:0,notes:[],ach:[],heart:S.heartBy===p.id,boxes:0,teamBoxes:0});
+  const st={};S.players.forEach(p=>st[p.id]={p,init:init[p.id]||p.team,clues:0,tok:0,cursed:0,snatch:0,sw:0,bonus:0,notes:[],ach:[],heart:S.heartBy===p.id,boxes:0,teamBoxes:0,fastBoxes:0});
   const cur={};S.players.forEach(p=>cur[p.id]=init[p.id]||p.team);
+  const lastT={humans:start?start.t:0,vampires:start?start.t:0};
   const firstClue=S.log.find(e=>e.type==='clue'&&e.pid);
   S.log.forEach(e=>{
     if(e.type==='clue'&&st[e.pid])st[e.pid].clues++;
-    if(e.type==='advance'){if(st[e.pid])st[e.pid].boxes++;Object.keys(cur).forEach(id=>{if(cur[id]===e.team&&st[id])st[id].teamBoxes++})}
+    if(e.type==='advance'){if(st[e.pid])st[e.pid].boxes++;const fast=isFast(e.t-lastT[e.team]);lastT[e.team]=e.t;Object.keys(cur).forEach(id=>{if(cur[id]===e.team&&st[id]){st[id].teamBoxes++;if(fast)st[id].fastBoxes++}})}
     if(e.type==='deal')(e.finders||[]).forEach((f,i)=>{if(st[f]){st[f].tok++;if(e.results[i])st[f].cursed++}});
     if(e.type==='convert'){cur[e.pid]=e.to;if(st[e.pid]){st[e.pid].sw++;if(e.dealEv){const d=S.log.find(x=>x.id===e.dealEv);if(d&&d.target===e.pid)[...new Set((d.finders||[]).filter(Boolean))].forEach(f=>{if(st[f])st[f].snatch++})}}}
     if(e.type==='bonus'&&st[e.pid]){st[e.pid].bonus+=Number(e.pts)||0;if(e.note)st[e.pid].notes.push(e.note)}});
@@ -1182,12 +1221,13 @@ function scores(){const start=S.log.find(e=>e.type==='start');const init=start?s
     const mine=[],team=[];
     if(s.clues)mine.push([`Clues found ×${s.clues}`,s.clues*PTS.clue]);
     if(s.tok)mine.push([`Tokens found ×${s.tok}`,s.tok*PTS.token]);
-    if(s.boxes)mine.push([`Keymaster${s.boxes>1?' ×'+s.boxes:''}`,s.boxes*PTS.keymaster]);
-    if(s.heart)mine.push(['Heartbearer',PTS.heart]);
-    if(s.snatch)mine.push([`Soul Snatcher${s.snatch>1?' ×'+s.snatch:''}`,s.snatch*PTS.snatch]);
-    if(s.sw===0)mine.push(['Untouched',PTS.untouched]);
-    if(s.bonus)mine.push(['Demons’ bonus',s.bonus]);
+    if(s.boxes)mine.push([`Keymaster${s.boxes>1?' ×'+s.boxes:''}`,s.boxes*PTS.keymaster,s.boxes>1?'gave the answers that opened '+s.boxes+' boxes':'gave the answer that opened a box']);
+    if(s.heart)mine.push(['Heartbearer',PTS.heart,'gave the final answer and won the Heart']);
+    if(s.snatch)mine.push([`Soul Snatcher${s.snatch>1?' ×'+s.snatch:''}`,s.snatch*PTS.snatch,s.snatch>1?'turned '+s.snatch+' enemies with a deal':'turned an enemy with a deal']);
+    if(s.sw===0)mine.push(['Untouched',PTS.untouched,'never turned all night']);
+    if(s.bonus)mine.push(['Demons’ bonus',s.bonus,s.notes.length?s.notes.join('; '):'awarded by the demons']);
     if(s.teamBoxes)team.push([`Boxes opened ×${s.teamBoxes}`,s.teamBoxes*PTS.box]);
+    const sp=Number(S.settings.speedPts)||0;if(s.fastBoxes&&sp)team.push([`Speed bonus${s.fastBoxes>1?' ×'+s.fastBoxes:''}`,s.fastBoxes*sp,`room cleared in under ${S.settings.speedMins} min`]);
     if(s.won)team.push(['Won the Wager',PTS.win]);
     const sum=a=>a.reduce((x,y)=>x+y[1],0);
     s.mine=mine;s.team=team;s.indPts=sum(mine);s.teamPts=sum(team);s.pts=s.indPts+s.teamPts;
@@ -1215,7 +1255,8 @@ function teamCardHTML(arr){const W=S.winner;const order=W?[W,other(W)]:['humans'
   return `<article class="pcard team-card"><div class="pc-top"><div class="label">THE DEMONS' WAGER · MMXXVI</div><h2>The Reckoning</h2></div>
   ${order.map(t=>{const ts=teamStats(t);const mem=arr.filter(s=>s.p.team===t);const cls=W?(t===W?'win':'lose'):'';
     return `<section class="tc ${cls}"><div class="tc-head"><div class="crest">${crestHTML(t)}</div><div><div class="tag">${W?(t===W?'THE WINNERS':'THE LOSERS'):'STILL HUNTING'}</div><h3>${TEAM[t].name}</h3></div></div>
-     <div class="tc-stats">${ts.clues} clue${ts.clues===1?'':'s'} · ${ts.tokens} token${ts.tokens===1?'':'s'} · ${ts.cleared}/${S.settings.rooms.length} boxes opened</div>
+     <div class="tc-stats">Times: ${S.settings.rooms.map((r,i)=>{const rt=roomTime(t,i);return rt&&rt.done?fmtDur(rt.ms)+(isFast(rt.ms)?' ✦':''):'–'}).join(' · ')}</div>
+     <div class="tc-stats" style="margin-top:0">${ts.clues} clue${ts.clues===1?'':'s'} · ${ts.tokens} token${ts.tokens===1?'':'s'} · ${ts.cleared}/${S.settings.rooms.length} boxes opened</div>
      <ol class="tc-list">${mem.map(s=>`<li><span>${esc(s.p.name)}${s.init!==s.p.team?' <i>(turned)</i>':''}</span><span>${s.pts}</span></li>`).join('')||'<li><span>No souls left</span><span></span></li>'}</ol></section>`}).join('')}
   <div class="pc-foot">${W?`The ${TEAM[W].name} claimed the Heart of the Angel${S.heartBy?' · final answer by '+esc(nm(S.heartBy)):''}`:'The hunt is still on.'}</div></article>`}
 function personalCardHTML(s,n){
@@ -1226,11 +1267,12 @@ function personalCardHTML(s,n){
    <div class="pc-split">Team <b>${s.teamPts}</b> · Individual <b>${s.indPts}</b></div>
    ${s.mine.length<=4?`<p class="pc-line">${esc(s.line)}</p>`:''}
    <div class="pc-break">
-     <div><h4>INDIVIDUAL</h4><ul>${s.mine.map(([l,v])=>`<li><span>${esc(l)}</span><b>${v>0?'+':''}${v}</b></li>`).join('')||'<li class="none">None this time</li>'}</ul></div>
-     <div><h4>TEAM</h4><ul>${s.team.map(([l,v])=>`<li><span>${esc(l)}</span><b>+${v}</b></li>`).join('')||'<li class="none">None this time</li>'}</ul></div>
+     <div><h4>INDIVIDUAL</h4><ul>${s.mine.map(([l,v,d])=>`<li><span>${esc(l)}${d?`<small>${esc(d)}</small>`:''}</span><b>${v>0?'+':''}${v}</b></li>`).join('')||'<li class="none">None this time</li>'}</ul></div>
+     <div><h4>TEAM</h4><ul>${s.team.map(([l,v,d])=>`<li><span>${esc(l)}${d?`<small>${esc(d)}</small>`:''}</span><b>+${v}</b></li>`).join('')||'<li class="none">None this time</li>'}</ul></div>
    </div>
-   ${(()=>{const h=s.ach.filter(a=>!['heart','keeper','snatch','untouched'].includes(a));return h.length?`<div class="pc-stats"><b>Honours:</b> ${h.slice(0,3).map(a=>ACH[a][0]).join(' · ')}</div>`:'<div class="pc-stats"></div>'})()}</article>`}
+   ${(()=>{const h=s.ach.filter(a=>!['heart','keeper','snatch','untouched'].includes(a));return h.length?`<div class="pc-hon"><span class="lbl">HONOURS</span><ul>${h.slice(0,3).map(a=>`<li><b>${ACH[a][0]}</b><i> · ${ACH[a][1]}</i></li>`).join('')}</ul></div>`:'<div class="pc-hon"></div>'})()}</article>`}
 const cardsHTML=arr=>`<div class="cards">${teamCardHTML(arr)}${arr.map(s=>personalCardHTML(s,arr.length)).join('')}</div>`;
+function fitCards(){document.querySelectorAll('.pcard').forEach(c=>{c.classList.remove('fit1','fit2','fit3','fit4','fit5');for(const k of ['fit1','fit2','fit3','fit4','fit5']){if(c.scrollHeight<=c.clientHeight+1)break;c.classList.add(k)}})}
 function rScores(){if(!S.players.length){$('#s-scores').innerHTML=`<div class="panel" style="margin-top:12vh;text-align:center"><h2>No souls yet</h2><p>Scorecards appear once the hunt has players.</p></div>`;return}
   pageStyle();const arr=scores();
   $('#s-scores').innerHTML=`<div class="sc-head"><div class="label">THE DEMONS' WAGER · ALL HALLOWS' EVE MMXXVI</div><h1>The Book of Souls</h1>
@@ -1240,12 +1282,13 @@ function rScores(){if(!S.players.length){$('#s-scores').innerHTML=`<div class="p
    <p class="label">In the print dialog, pick the same paper size and set margins to None.</p>
    <p class="label" id="save-msg"></p></div>
   ${cardsHTML(arr)}`;
-  $('#card-size').onchange=e=>{S.settings.card=e.target.value;save();pageStyle()}}
+  $('#card-size').onchange=e=>{S.settings.card=e.target.value;save();pageStyle();fitCards()};
+  fitCards();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(S.screen==='scores')fitCards()})}
 async function saveCards(){const msg=$('#save-msg');try{const dl=await window.claude?.use?.('downloads');
   if(!dl){msg.textContent='Saving is not available here. Open the scorecards from the desktop app or claude.ai in Chrome.';return}
   pageStyle();const css=[...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');
   const html=`<!doctype html><html><head><meta charset="utf-8"><title>Scorecards · The Demons' Wager</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Spectral:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&display=swap"><style>${css}
-body{background:#fff;padding:20px}@media print{body{padding:0!important}}</style></head><body>${cardsHTML(scores())}<script>window.onload=()=>setTimeout(()=>window.print(),800)<\/script></body></html>`;
+body{background:#fff;padding:20px}@media print{body{padding:0!important}}</style></head><body>${cardsHTML(scores())}<script>${fitCards.toString()}\nwindow.onload=()=>{fitCards();setTimeout(()=>{fitCards();window.print()},800)}<\/script></body></html>`;
   await dl.save({filename:'demons-wager-scorecards.html',data:html});msg.textContent='Saved. Open the file in Chrome and it will ask to print.'}
   catch(e){msg.textContent=e&&e.code==='declined'?'Save cancelled.':'The file could not be saved. Try again.'}}
 
