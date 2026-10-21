@@ -938,11 +938,11 @@ function vaultTiles(t){const ph=S.phase[t];
     const label=st==='done'?'Opened':st==='locked'?'Sealed':total?`${found}/${total} codes`:'Open now';
     return `<button class="vbox ${st}" data-action="vault" data-team="${t}" data-ri="${i}" aria-label="${esc(r)} box, ${label}"><span class="ico">${boxArt(t,i)}</span><span class="rm-name">${esc(r)}</span><span class="st">${label}</span></button>`}).join('')}</div>`}
 function cheerText(t,ri){const rooms=S.settings.rooms,last=ri>=rooms.length-1,item=((S.settings.vaults[ri]||{}).item||'').trim();
-  return last?`The final box is open! ${item?'Inside lies '+item+'.':''}`:`You cleared the ${rooms[ri]}! You have now unlocked ${rooms[ri+1]}.${item?' Your reward: '+item+'.':''}`}
+  return last?`Team ${TEAM[t].name} opened the final box! ${item?'Inside lies '+item+'.':''}`:`Team ${TEAM[t].name} cleared the ${rooms[ri]}! They have now unlocked ${rooms[ri+1]}.${item?' Their reward: '+item+'.':''}`}
 function cheerHTML(t,ri){const rooms=S.settings.rooms,last=ri>=rooms.length-1,item=((S.settings.vaults[ri]||{}).item||'').trim();
-  const sub=last?(item?`Inside lies <b>${esc(item)}</b>.`:'The last seal is broken.'):`You have now unlocked <b>${esc(rooms[ri+1])}</b>.${item?` Your reward: <b>${esc(item)}</b>. You will need it there.`:''}`;
+  const sub=last?(item?`Inside lies <b>${esc(item)}</b>.`:'The last seal is broken.'):`They have now unlocked <b>${esc(rooms[ri+1])}</b>.${item?` Their reward: <b>${esc(item)}</b>. They will need it there.`:''}`;
   const claim=last&&S.winner!==t?`<button class="btn primary" data-action="vault-claim">Claim the Heart for the ${TEAM[t].name}</button>`:'';
-  return `<div class="cheer ${TEAM[t].cls}">${last?'The final box is open!':`You cleared the ${esc(rooms[ri])}!`}</div><p class="unlock">${sub}</p>
+  return `<div class="cheer ${TEAM[t].cls}">${last?`Team ${TEAM[t].name} opened the final box!`:`Team ${TEAM[t].name} cleared the ${esc(rooms[ri])}!`}</div><p class="unlock">${sub}</p>
    <div class="row" style="justify-content:center;margin-top:18px">${claim}<button class="btn ${claim?'':'primary'}" data-action="close-vault">Done</button></div>`}
 const advOf=(t,ri)=>S.log.slice().reverse().find(e=>e.type==='advance'&&e.team===t&&(e.ri!=null?e.ri:S.settings.rooms.indexOf(e.room))===ri);
 function openVault(t,ri){const ph=S.phase[t],rooms=S.settings.rooms,st=ri<ph?'done':ri===ph?'now':'locked';UI.vault={t,ri,arm:false};
