@@ -368,18 +368,18 @@ textarea{width:100%;resize:vertical}
 .cards{display:flex;flex-wrap:wrap;gap:24px;justify-content:center}
 .pcard{background:var(--parch);color:var(--ink);border-radius:6px;padding:.3in .28in;box-shadow:inset 0 0 60px rgba(90,50,10,.25),0 16px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;overflow:hidden;position:relative;line-height:1.35}
 .pcard::after{content:"";position:absolute;inset:.1in;border:3px double rgba(74,16,24,.5);border-radius:4px;pointer-events:none}
-.pcard .label{color:var(--sepia);font-size:.7em;letter-spacing:.14em}
+.pcard .label{color:var(--sepia);font-size:.74em;letter-spacing:.14em}
 .pc-top{text-align:center}
 .pcard h2{color:#4a1018;line-height:1}
-.team-card h2{font-size:2.1em;margin:.15em 0 .35em}
-.pc-name{font-size:3em;margin:.15em 0 .15em;overflow-wrap:anywhere}
-.pc-team{display:flex;justify-content:center;align-items:center;gap:.4em;font-family:var(--f-label);font-size:1.1em;letter-spacing:.06em}
+.team-card h2{font-size:2.7em;margin:.1em 0 .3em}
+.pc-name{font-size:3.8em;margin:.15em 0 .15em;overflow-wrap:anywhere}
+.pc-team{display:flex;justify-content:center;align-items:center;gap:.4em;font-family:var(--f-label);font-size:1.3em;letter-spacing:.06em}
 .pc-team .crest{width:1.8em;height:1.8em}
-.pc-result{display:inline-block;margin-top:.5em;font-family:var(--f-display);font-size:1.5em;padding:.05em .7em;border-radius:999px;border:2px solid currentColor;color:#6b4a2a}
+.pc-result{display:inline-block;margin-top:.4em;font-family:var(--f-display);font-size:1.9em;padding:.05em .7em;border-radius:999px;border:2px solid currentColor;color:#6b4a2a}
 .pc-result.won{color:#7a5a12;background:rgba(226,170,76,.22)}
 .pc-result.lost{color:#6b1020}
 .pc-score{display:flex;align-items:center;justify-content:center;gap:.6em;margin:.7em 0 .4em;border-top:1px solid rgba(60,30,10,.3);border-bottom:1px solid rgba(60,30,10,.3);padding:.35em 0;font-variant-numeric:tabular-nums}
-.pc-score .rank{font-family:var(--f-display);font-size:2.8em;line-height:1;color:var(--wine)}
+.pc-score .rank{font-family:var(--f-display);font-size:3.4em;line-height:1;color:var(--wine)}
 .pc-line{font-style:italic;text-align:center;margin:.3em 0 .5em;font-size:1.02em}
 .pc-ach{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.2em;font-size:.88em}
 .pc-ach b{font-family:var(--f-label);font-weight:400;color:#4a1018}
@@ -388,14 +388,15 @@ textarea{width:100%;resize:vertical}
 .tc{border-radius:6px;padding:.45em .6em;margin-bottom:.5em;border:1px solid rgba(60,30,10,.3)}
 .tc.win{border:2px solid #b8862e;background:rgba(226,170,76,.18)}
 .tc-head{display:flex;align-items:center;gap:.5em}
-.tc-head .crest{width:2.3em;height:2.3em}
-.tc .tag{font-family:var(--f-label);letter-spacing:.16em;font-size:.82em;color:var(--sepia)}
+.tc-head .crest{width:2.8em;height:2.8em}
+.tc .tag{font-family:var(--f-label);letter-spacing:.16em;font-size:.95em;color:var(--sepia)}
 .tc.win .tag{color:#7a5a12;font-weight:600}
 .tc.lose .tag{color:#6b1020;font-weight:600}
-.tc h3{font-size:1.65em;line-height:1;color:#4a1018}
-.tc-stats{font-size:.78em;color:#6b4a2a;margin:.2em 0 .3em}
-.tc-list{list-style:none;margin:0;padding:0;font-size:.9em}
-.tc-list li{display:flex;justify-content:space-between;gap:.6em;border-bottom:1px dotted rgba(60,30,10,.3);padding:.06em 0;font-variant-numeric:tabular-nums}
+.tc h3{font-size:2.1em;line-height:1;color:#4a1018}
+.tc-stats{font-size:.85em;color:#6b4a2a;margin:.2em 0 .3em}
+.tc-list{list-style:none;margin:0;padding:0;font-size:1em;display:grid;grid-template-columns:1fr 1fr;column-gap:1em}
+.tc-list li{display:flex;justify-content:space-between;gap:.4em;min-width:0;border-bottom:1px dotted rgba(60,30,10,.3);padding:.06em 0;font-variant-numeric:tabular-nums}
+.tc-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tc-list i{color:#6b4a2a;font-size:.85em}
 
 @media (max-width:1100px){
@@ -1138,21 +1139,21 @@ function sentence(s){const parts=[];const one=t=>TEAM[t].one.toLowerCase();
 const ord=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
 const CARD={'4x6':['4in','6in',4,'4 × 6 in (index card)'],'5x7':['5in','7in',5,'5 × 7 in'],'a6':['105mm','148mm',4.13,'A6'],'a5':['148mm','210mm',5.83,'A5']};
 function pageStyle(){let el=document.getElementById('page-size');if(!el){el=document.createElement('style');el.id='page-size';document.head.appendChild(el)}
-  const [w,h,inch]=CARD[S.settings.card]||CARD['4x6'];el.textContent=`@page{size:${w} ${h};margin:0}.pcard{width:${w};height:${h};font-size:${(inch*2.75).toFixed(1)}pt}`}
+  const [w,h,inch]=CARD[S.settings.card]||CARD['4x6'];el.textContent=`@page{size:${w} ${h};margin:0}.pcard{width:${w};height:${h};font-size:${(inch*3.1).toFixed(1)}pt}`}
 function teamCardHTML(arr){const W=S.winner;const order=W?[W,other(W)]:['humans','vampires'];
-  return `<article class="pcard team-card"><div class="pc-top"><div class="label">THE DEMONS' WAGER · ALL HALLOWS' EVE MMXXVI</div><h2>The Final Reckoning</h2></div>
+  return `<article class="pcard team-card"><div class="pc-top"><div class="label">THE DEMONS' WAGER · MMXXVI</div><h2>The Reckoning</h2></div>
   ${order.map(t=>{const ts=teamStats(t);const mem=arr.filter(s=>s.p.team===t);const cls=W?(t===W?'win':'lose'):'';
     return `<section class="tc ${cls}"><div class="tc-head"><div class="crest">${crestHTML(t)}</div><div><div class="tag">${W?(t===W?'THE WINNERS':'THE LOSERS'):'STILL HUNTING'}</div><h3>${TEAM[t].name}</h3></div></div>
      <div class="tc-stats">${ts.clues} clue${ts.clues===1?'':'s'} · ${ts.tokens} token${ts.tokens===1?'':'s'} · ${ts.cleared}/${S.settings.rooms.length} boxes opened</div>
-     <ol class="tc-list">${mem.map(s=>`<li><span>${esc(s.p.name)}${s.init!==s.p.team?` <i>(was a ${TEAM[s.init].one.toLowerCase()})</i>`:''}</span><span>${s.pts} pts</span></li>`).join('')||'<li><span>No souls left</span><span></span></li>'}</ol></section>`}).join('')}
+     <ol class="tc-list">${mem.map(s=>`<li><span>${esc(s.p.name)}${s.init!==s.p.team?' <i>(turned)</i>':''}</span><span>${s.pts}</span></li>`).join('')||'<li><span>No souls left</span><span></span></li>'}</ol></section>`}).join('')}
   <div class="pc-foot">${W?`The ${TEAM[W].name} claimed the Heart of the Angel${S.heartBy?' · final answer by '+esc(nm(S.heartBy)):''}`:'The hunt is still on.'}</div></article>`}
 function personalCardHTML(s,n){
-  return `<article class="pcard"><div class="pc-top"><div class="label">THE DEMONS' WAGER · ALL HALLOWS' EVE MMXXVI</div><h2 class="pc-name">${esc(s.p.name)}</h2>
+  return `<article class="pcard"><div class="pc-top"><div class="label">THE DEMONS' WAGER · MMXXVI</div><h2 class="pc-name">${esc(s.p.name)}</h2>
    <div class="pc-team"><span class="crest">${crestHTML(s.p.team)}</span><span>${s.init!==s.p.team?`${TEAM[s.init].one} → ${TEAM[s.p.team].one}`:TEAM[s.p.team].one}</span></div>
    <div class="pc-result ${S.winner?(s.won?'won':'lost'):''}">${S.winner?(s.won?'Won the Wager':'Lost the Wager'):'Still hunting'}</div></div>
    <div class="pc-score"><span class="rank">${ord(s.rank)}</span><span>of ${n} souls<br><b>${s.pts} points</b></span></div>
    <p class="pc-line">${esc(s.line)}</p>
-   <ul class="pc-ach">${s.ach.slice(0,5).map(a=>`<li><b>${ACH[a][0]}</b> · ${ACH[a][1]}</li>`).join('')}</ul>
+   <ul class="pc-ach">${s.ach.slice(0,4).map(a=>`<li><b>${ACH[a][0]}</b> · ${ACH[a][1]}</li>`).join('')}</ul>
    <div class="pc-stats">Clues ${s.clues} · Tokens ${s.tok} · Cursed ${s.cursed} · Turned ${s.sw}${s.bonus?` · Bonus ${s.bonus>0?'+':''}${s.bonus}`:''}</div></article>`}
 const cardsHTML=arr=>`<div class="cards">${teamCardHTML(arr)}${arr.map(s=>personalCardHTML(s,arr.length)).join('')}</div>`;
 function rScores(){if(!S.players.length){$('#s-scores').innerHTML=`<div class="panel" style="margin-top:12vh;text-align:center"><h2>No souls yet</h2><p>Scorecards appear once the hunt has players.</p></div>`;return}
