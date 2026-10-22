@@ -411,60 +411,84 @@ textarea{width:100%;resize:vertical}
 .vic.has-bg .copy{background:rgba(5,4,8,.6);border-radius:16px;padding:24px 28px;color:var(--bone)}
 .vic.has-bg h1{color:var(--bone)}
 
-/* SCORECARDS (card sized; size is set in pageStyle) */
+/* SCORECARDS: 85.60 × 53.98 mm (bank-card size) */
 .sc-head{text-align:center;margin:3vh 0 24px}
 .sc-head h1{font-size:clamp(2.6rem,5vw,4.2rem)}
-.cards{display:flex;flex-wrap:wrap;gap:24px;justify-content:center}
-.pcard{background:var(--parch);color:var(--ink);border-radius:6px;padding:.3in .28in;box-shadow:inset 0 0 60px rgba(90,50,10,.25),0 16px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;overflow:hidden;position:relative;line-height:1.35}
-.pcard::after{content:"";position:absolute;inset:.1in;border:3px double rgba(74,16,24,.5);border-radius:4px;pointer-events:none}
-.pcard .label{color:var(--sepia);font-size:.74em;letter-spacing:.14em}
-.pc-top{text-align:center}
-.pcard h2{color:#4a1018;line-height:1}
-.team-card h2{font-size:2.7em;margin:.1em 0 .3em}
-.pc-name{font-size:3.5em;margin:.15em 0 .15em;overflow-wrap:anywhere}
-.pc-team{display:flex;justify-content:center;align-items:center;gap:.4em;font-family:var(--f-label);font-size:1.3em;letter-spacing:.06em}
-.pc-team .crest{width:1.8em;height:1.8em}
-.pc-result{display:inline-block;margin-top:.4em;font-family:var(--f-display);font-size:1.9em;padding:.05em .7em;border-radius:999px;border:2px solid currentColor;color:#6b4a2a}
+.print-opts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0 6px}
+.cards{display:flex;flex-wrap:wrap;gap:22px;justify-content:center}
+@media screen{.cards .pcard{zoom:1.75;box-shadow:0 10px 26px rgba(0,0,0,.55)}}
+.pcard{width:85.6mm;height:53.98mm;box-sizing:border-box;padding:2.9mm 3.4mm;font-size:6.3pt;line-height:1.28;color:var(--ink);border-radius:3mm;overflow:hidden;position:relative;
+  background-color:#e3d0a6;background-image:radial-gradient(ellipse at 50% 50%,rgba(255,248,225,.35) 0,transparent 55%),radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(105,62,20,.32) 100%),radial-gradient(circle at 82% 78%,rgba(140,88,30,.16) 0,rgba(140,88,30,.08) 9%,transparent 16%),radial-gradient(circle at 14% 18%,rgba(140,88,30,.10) 0,transparent 12%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .2 0 0 0 0 .07 0 0 0 .42 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='260'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .03' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");background-size:cover,cover,cover,cover,80mm 80mm,cover;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pcard::after{content:"";position:absolute;inset:1.3mm;border:2.5px double rgba(74,16,24,.5);border-radius:2mm;pointer-events:none}
+.pcard .label{color:var(--sepia);font-size:.78em;letter-spacing:.08em;white-space:nowrap;font-family:var(--f-label)}
+.pcard h2{color:#4a1018;line-height:1;font-weight:400}
+
+/* player card: two columns */
+.pc{display:grid;grid-template-columns:37% 1fr;column-gap:2.6mm}
+.pc-l{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-right:1px solid rgba(60,30,10,.28);padding-right:2.4mm;min-width:0}
+.pc-r{display:flex;flex-direction:column;min-width:0;min-height:0}
+.pc-name{font-size:3em;margin:.05em 0 .05em;white-space:nowrap;max-width:100%;overflow:hidden}
+.pc-team{display:flex;justify-content:center;align-items:center;gap:.35em;font-family:var(--f-label);font-size:1.15em;letter-spacing:.04em}
+.pc-team .crest{width:1.6em;height:1.6em}
+.pc-result{display:inline-block;margin-top:.35em;font-family:var(--f-display);font-size:1.45em;padding:0 .6em;border-radius:999px;border:1.5px solid currentColor;color:#6b4a2a;white-space:nowrap}
 .pc-result.won{color:#7a5a12;background:rgba(226,170,76,.22)}
 .pc-result.lost{color:#6b1020}
-.pc-score{display:flex;align-items:center;justify-content:center;gap:.6em;margin:.55em 0 .35em;border-top:1px solid rgba(60,30,10,.3);border-bottom:1px solid rgba(60,30,10,.3);padding:.35em 0;font-variant-numeric:tabular-nums}
-.pc-score .rank{font-family:var(--f-display);font-size:3.4em;line-height:1;color:var(--wine)}
-.pc-line{font-style:italic;text-align:center;margin:.3em 0 .5em;font-size:1.02em}
-.pc-split{text-align:center;font-family:var(--f-label);letter-spacing:.06em;font-size:.9em;color:#6b4a2a;margin:-.15em 0 .45em}
+.pc-score{display:flex;align-items:center;justify-content:center;gap:.45em;margin:.35em 0 .1em;font-variant-numeric:tabular-nums;line-height:1.15}
+.pc-score .rank{font-family:var(--f-display);font-size:2.9em;line-height:1;color:var(--wine)}
+.pc-score span:last-child{text-align:left}
+.pc-split{font-family:var(--f-label);letter-spacing:.04em;font-size:.95em;color:#6b4a2a}
 .pc-split b{color:#4a1018;font-family:var(--f-body);font-weight:600;letter-spacing:0}
-.pc-break{display:grid;grid-template-columns:1fr 1fr;gap:.2em 1em;font-size:.82em;margin-top:.2em}
-.pc-break h4{margin:0 0 .15em;font-family:var(--f-label);font-weight:400;letter-spacing:.12em;color:var(--sepia);font-size:.9em;border-bottom:1px solid rgba(60,30,10,.3)}
+.pc-line{font-style:italic;margin:.35em 0 0;font-size:.9em;line-height:1.2}
+.pc-break h4{margin:.15em 0 .1em;font-family:var(--f-label);font-weight:400;letter-spacing:.12em;color:var(--sepia);font-size:.85em;border-bottom:1px solid rgba(60,30,10,.3)}
+.pc-break h4:first-child{margin-top:0}
 .pc-break ul{list-style:none;margin:0;padding:0}
-.pc-break li{display:flex;justify-content:space-between;gap:.5em;padding:.05em 0}
-.pc-break li b{font-variant-numeric:tabular-nums;color:#4a1018}
-.pc-break li small{display:block;font-size:.8em;line-height:1.2;color:#6b4a2a;font-style:italic}
-.pc-hon{margin-top:auto;padding-top:.35em;font-size:.78em;color:#6b4a2a;line-height:1.3}
-.pc-hon b{font-family:var(--f-label);font-weight:400;color:#4a1018;font-size:1.08em}
-.pc-hon .lbl{font-family:var(--f-label);letter-spacing:.12em;color:var(--sepia);font-size:.95em}
-.pc-hon ul{list-style:none;margin:.1em 0 0;padding:0;display:flex;flex-direction:column;gap:.05em}
-.pcard.fit2 .pc-hon ul{display:block}.pcard.fit2 .pc-hon li{display:inline}.pcard.fit2 .pc-hon li + li::before{content:" · "}.pcard.fit2 .pc-hon i{display:none}
-.pcard.fit3 .pc-name{font-size:2.8em;margin:.05em 0}.pcard.fit3 .pc-result{font-size:1.5em;margin-top:.25em}.pcard.fit3 .pc-score{margin:.35em 0 .25em;padding:.2em 0}.pcard.fit3 .pc-score .rank{font-size:2.8em}
-.pcard.fit4 .pc-break{font-size:.76em}
-.pcard.fit5 .pc-break li small{display:none}
-.pcard.fit1 .pc-line{display:none}
+.pc-break li{display:flex;justify-content:space-between;gap:.5em;padding:.02em 0;line-height:1.18}
+.pc-break li b{font-variant-numeric:tabular-nums;color:#4a1018;font-family:var(--f-body);font-weight:600}
+.pc-break li small{display:block;font-size:.82em;line-height:1.15;color:#6b4a2a;font-style:italic}
 .pc-break li.none{color:#8a6a44;font-style:italic}
-.pc-ach{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.2em;font-size:.88em}
-.pc-ach b{font-family:var(--f-label);font-weight:400;color:#4a1018}
-.pc-stats,.pc-foot{margin-top:auto;padding-top:.4em;text-align:center;font-size:.78em;color:#6b4a2a;font-variant-numeric:tabular-nums}
-.pc-foot{font-family:var(--f-label);letter-spacing:.05em}
-.tc{border-radius:6px;padding:.4em .6em;margin-bottom:.4em;border:1px solid rgba(60,30,10,.3)}
-.tc.win{border:2px solid #b8862e;background:rgba(226,170,76,.18)}
-.tc-head{display:flex;align-items:center;gap:.5em}
-.tc-head .crest{width:2.8em;height:2.8em}
-.tc .tag{font-family:var(--f-label);letter-spacing:.16em;font-size:.95em;color:var(--sepia)}
+.pc-hon{margin-top:auto;padding-top:.25em;font-size:.82em;color:#6b4a2a;line-height:1.2}
+.pc-hon b{font-family:var(--f-label);font-weight:400;color:#4a1018}
+.pc-hon .lbl{font-family:var(--f-label);letter-spacing:.12em;color:var(--sepia)}
+.pc-l .label{font-size:.68em;letter-spacing:.04em}
+.pcard.fit1 .pc-line{display:none}
+.pcard.fit2 .pc-r{font-size:.93em}
+.pcard.fit3 .pc-r{font-size:.86em}
+.pcard.fit4 .pc-r{font-size:.8em}
+.pcard.fit5 .pc-r{font-size:.74em}
+
+/* team card */
+.team-card{display:flex;flex-direction:column}
+.tc-top{display:flex;align-items:baseline;justify-content:center;gap:.6em}
+.team-card h2{font-size:2.1em}
+.tc-cols{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin-top:.35em;flex:1;min-height:0}
+.tc{border-radius:1.5mm;padding:.35em .5em;border:1px solid rgba(60,30,10,.3);min-width:0;overflow:hidden}
+.tc.win{border:1.5px solid #b8862e;background:rgba(226,170,76,.18)}
+.tc-head{display:flex;align-items:center;gap:.4em}
+.tc-head .crest{width:2.2em;height:2.2em;flex:none}
+.tc .tag{font-family:var(--f-label);letter-spacing:.14em;font-size:.85em;color:var(--sepia)}
 .tc.win .tag{color:#7a5a12;font-weight:600}
 .tc.lose .tag{color:#6b1020;font-weight:600}
-.tc h3{font-size:2.1em;line-height:1;color:#4a1018}
-.tc-stats{font-size:.85em;color:#6b4a2a;margin:.1em 0 .2em}
-.tc-list{list-style:none;margin:0;padding:0;font-size:1em;display:grid;grid-template-columns:1fr 1fr;column-gap:1em}
-.tc-list li{display:flex;justify-content:space-between;gap:.4em;min-width:0;border-bottom:1px dotted rgba(60,30,10,.3);padding:.06em 0;font-variant-numeric:tabular-nums}
+.tc h3{font-size:1.75em;line-height:1;color:#4a1018}
+.tc-stats{font-size:.82em;color:#6b4a2a;margin:.1em 0 .15em;line-height:1.2}
+.tc-list{list-style:none;margin:0;padding:0;font-size:1.18em}
+.tc-list li{display:flex;justify-content:space-between;gap:.4em;min-width:0;border-bottom:1px dotted rgba(60,30,10,.3);padding:.02em 0;font-variant-numeric:tabular-nums;line-height:1.2}
 .tc-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tc-list i{color:#6b4a2a;font-size:.85em}
+.pc-foot{margin-top:.3em;text-align:center;font-size:.85em;color:#6b4a2a;font-family:var(--f-label);letter-spacing:.04em}
+.team-card.fit1 .tc-stats + .tc-stats{display:none}
+.team-card.fit2 .tc-list{font-size:1em}
+.team-card.fit3 .tc-list{font-size:.88em}.team-card.fit3 .tc h3{font-size:1.5em}
+.team-card.fit4 .tc-list{font-size:.75em}
+.team-card.fit5 .pc-foot{display:none}
+
+/* print layouts (built off-screen, shown only when printing) */
+#print-root{position:fixed;left:-10000px;top:0;visibility:hidden;pointer-events:none}
+.sheet{width:210mm;height:297mm;box-sizing:border-box;display:grid;grid-template-columns:repeat(2,85.6mm);grid-auto-rows:53.98mm;gap:2mm;justify-content:center;align-content:center;background:#fff;break-after:page;page-break-after:always}
+.sheet:last-child{break-after:auto;page-break-after:auto}
+.sheet .pcard{border-radius:0;outline:.25mm dashed #9a9a9a;outline-offset:1mm}
+.singles .pcard{break-after:page;page-break-after:always;border-radius:0}
+.singles .pcard:last-child{break-after:auto;page-break-after:auto}
 
 @media (max-width:1100px){
   .board{grid-template-columns:1fr 1fr}
@@ -490,12 +514,10 @@ textarea{width:100%;resize:vertical}
 }
 @media print{
   :root{color-scheme:light}
-  body{background:#fff;color:#000;padding:0;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .gm-bar,.no-print,.screen:not(#s-scores),.sc-head,.overlay{display:none!important}
-  #s-scores{display:block!important;padding:0;margin:0;max-width:none}
-  .cards{display:block}
-  .pcard{box-shadow:none;background:#fff;border-radius:0;margin:0;break-after:page;page-break-after:always}
-  .pcard:last-child{break-after:auto;page-break-after:auto}
+  html,body{background:#fff!important;padding:0!important;margin:0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body > *:not(#print-root){display:none!important}
+  #print-root{position:static!important;visibility:visible!important;left:auto}
+  #print-root .pcard{zoom:1;box-shadow:none}
 }
 </style>
 
@@ -526,6 +548,7 @@ textarea{width:100%;resize:vertical}
 
 <div class="overlay" id="modal" hidden><div class="modal" id="modal-box"></div></div>
 <div class="overlay" id="reveal" hidden><div class="rv" id="rv"></div></div>
+<div id="print-root" aria-hidden="true"></div>
 <div class="overlay" id="vault" hidden><div class="vt" id="vt"></div></div>
 
 <script>
@@ -683,7 +706,9 @@ function chooseVoice(){const st=S.settings;if(!voices.length)loadVoices();
 function speak(text,onend){if(!('speechSynthesis' in window)){onend&&onend();return}
   try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);const v=chooseVoice();if(v)u.voice=v;
    u.rate=Number(S.settings.rate)||.85;u.pitch=Number(S.settings.pitch)||.7;
-   u.onend=()=>{document.body.classList.remove('speaking');onend&&onend()};
+   let done=false;const fin=()=>{if(done)return;done=true;clearTimeout(guard);document.body.classList.remove('speaking');onend&&onend()};
+   const guard=setTimeout(fin,Math.min(60000,2500+text.length*110));
+   u.onend=fin;u.onerror=fin;
    document.body.classList.add('speaking');speechSynthesis.speak(u)}catch(e){onend&&onend()}}
 function hush(){try{speechSynthesis.cancel()}catch(e){}document.body.classList.remove('speaking');readingAll=false}
 
@@ -723,9 +748,13 @@ function musicStop(){if(!MUS.on||!MUS.ac)return;MUS.on=false;const ac=MUS.ac,now
   MUS.master.gain.cancelScheduledValues(now);MUS.master.gain.setValueAtTime(MUS.master.gain.value,now);MUS.master.gain.linearRampToValueAtTime(0,now+1.5);
   const ns=MUS.nodes;MUS.nodes=[];setTimeout(()=>ns.forEach(n=>{try{n.stop()}catch(e){}}),1700);renderBar()}
 function musicVol(){if(MUS.on&&MUS.ac)MUS.master.gain.setTargetAtTime(vol(),MUS.ac.currentTime,.2)}
-function sfx(kind){const ac=acInit();if(!ac)return;ac.resume();const t=ac.currentTime+.02;const out=ac.createGain();out.gain.value=Math.max(.25,vol());out.connect(ac.destination);
-  const dry=ac.createGain();dry.gain.value=.6;dry.connect(out);
-  const wet=ac.createGain();wet.gain.value=.5;const v=ac.createConvolver();v.buffer=MUS.verb.buffer;v.connect(wet);wet.connect(out);
+function sfxBus(ac){if(!MUS.fx){const out=ac.createGain();out.connect(ac.destination);
+    const dry=ac.createGain();dry.gain.value=.6;dry.connect(out);
+    const wet=ac.createGain();wet.gain.value=.5;const v=ac.createConvolver();v.buffer=MUS.verb.buffer;v.connect(wet);wet.connect(out);MUS.fx={out,dry,v}}
+  MUS.fx.out.gain.value=Math.max(.25,vol());return MUS.fx}
+let lastTick=0;
+function sfx(kind){const ac=acInit();if(!ac)return;if(ac.state!=='running')ac.resume();const t=ac.currentTime+.02;const {dry,v}=sfxBus(ac);
+  if(kind==='tick'){const now=performance.now();if(now-lastTick<90)return;lastTick=now}
   if(kind==='tick'){note(1400+Math.random()*400,t,.08,'square',.03,dry)}
   if(kind==='safe'){[1174.7,1480,1760].forEach((f,k)=>note(f,t+k*.09,1.6,'sine',.12,v))}
   if(kind==='cursed'){[55,58.3,82.4].forEach(f=>note(f,t,2.8,'sawtooth',.22,v));note(36.7,t,3,'sine',.5,dry);note(1244.5,t+.05,1.4,'triangle',.05,v)}
@@ -868,11 +897,14 @@ async function roll(){if(rolling)return;rolling=true;S.rolled=false;const ps=S.p
   const lo=Math.round(n*.4),hi=Math.round(n*.6);const hc=lo+Math.floor(Math.random()*(hi-lo+1));
   const order=ps.map((_,i)=>i).sort(()=>Math.random()-.5);const assign={};order.forEach((idx,k)=>assign[ps[idx].id]=k<hc?'humans':'vampires');
   ps.forEach(p=>p.team=null);rSetup();
-  for(const p of ps){const li=document.querySelector(`#rolls li[data-id="${p.id}"] .res`);if(!li)continue;
-    let k=0;const iv=setInterval(()=>{li.textContent=k%2?'HUMAN':'VAMPIRE';li.className='res spin '+(k%2?'hum':'vam');k++;sfx('tick')},110);
-    await sleep(1000);clearInterval(iv);p.team=assign[p.id];li.className='res '+TEAM[p.team].cls;li.textContent=TEAM[p.team].one.toUpperCase();sfx(p.team==='humans'?'safe':'cursed');
-    if(S.settings.voiceOn){await new Promise(r=>speak(`${p.name}. ${TEAM[p.team].one}.`,r))}else await sleep(350)}
-  S.rolled=true;save();rolling=false;await sleep(600);if(S.screen==='setup')rSetup()}
+  try{
+    for(const p of ps){const li=document.querySelector(`#rolls li[data-id="${p.id}"] .res`);
+      if(li&&S.screen==='setup'){let k=0;const iv=setInterval(()=>{li.textContent=k%2?'HUMAN':'VAMPIRE';li.className='res spin '+(k%2?'hum':'vam');k++;sfx('tick')},120);
+        await sleep(1000);clearInterval(iv);p.team=assign[p.id];li.className='res '+TEAM[p.team].cls;li.textContent=TEAM[p.team].one.toUpperCase();sfx(p.team==='humans'?'safe':'cursed');
+        if(S.settings.voiceOn){await new Promise(r=>speak(`${p.name}. ${TEAM[p.team].one}.`,r))}else await sleep(350)}
+      else p.team=assign[p.id]}
+  }finally{ps.forEach(p=>{if(!p.team)p.team=assign[p.id]||'humans'});S.rolled=true;save();rolling=false}
+  await sleep(600);if(S.screen==='setup')rSetup()}
 
 /* ---------- tallies ---------- */
 function pStats(pid){let clues=0,tokens=0;S.log.forEach(e=>{if(e.type==='clue'&&e.pid===pid)clues++;if(e.type==='deal')(e.finders||[]).forEach(f=>{if(f===pid)tokens++})});return{clues,tokens}}
@@ -1248,48 +1280,61 @@ function sentence(s){const parts=[];const one=t=>TEAM[t].one.toLowerCase();
   if(!parts.length)parts.push('Kept to the shadows and lived to see the end of the night.');
   return parts[0]}
 const ord=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
-const CARD={'4x6':['4in','6in',4,'4 × 6 in (index card)'],'5x7':['5in','7in',5,'5 × 7 in'],'a6':['105mm','148mm',4.13,'A6'],'a5':['148mm','210mm',5.83,'A5']};
-function pageStyle(){let el=document.getElementById('page-size');if(!el){el=document.createElement('style');el.id='page-size';document.head.appendChild(el)}
-  const [w,h,inch]=CARD[S.settings.card]||CARD['4x6'];el.textContent=`@page{size:${w} ${h};margin:0}.pcard{width:${w};height:${h};font-size:${(inch*3.1).toFixed(1)}pt}`}
 function teamCardHTML(arr){const W=S.winner;const order=W?[W,other(W)]:['humans','vampires'];
-  return `<article class="pcard team-card"><div class="pc-top"><div class="label">THE DEMONS' WAGER · MMXXVI</div><h2>The Reckoning</h2></div>
-  ${order.map(t=>{const ts=teamStats(t);const mem=arr.filter(s=>s.p.team===t);const cls=W?(t===W?'win':'lose'):'';
+  return `<article class="pcard team-card"><div class="tc-top"><span class="label">THE DEMONS' WAGER · MMXXVI</span><h2>The Reckoning</h2></div>
+  <div class="tc-cols">${order.map(t=>{const ts=teamStats(t);const mem=arr.filter(s=>s.p.team===t);const cls=W?(t===W?'win':'lose'):'';
     return `<section class="tc ${cls}"><div class="tc-head"><div class="crest">${crestHTML(t)}</div><div><div class="tag">${W?(t===W?'THE WINNERS':'THE LOSERS'):'STILL HUNTING'}</div><h3>${TEAM[t].name}</h3></div></div>
      <div class="tc-stats">Times: ${S.settings.rooms.map((r,i)=>{const rt=roomTime(t,i);return rt&&rt.done?fmtDur(rt.ms)+(isFast(rt.ms)?' ✦':''):'–'}).join(' · ')}</div>
-     <div class="tc-stats" style="margin-top:0">${ts.clues} clue${ts.clues===1?'':'s'} · ${ts.tokens} token${ts.tokens===1?'':'s'} · ${ts.cleared}/${S.settings.rooms.length} boxes opened</div>
-     <ol class="tc-list">${mem.map(s=>`<li><span>${esc(s.p.name)}${s.init!==s.p.team?' <i>(turned)</i>':''}</span><span>${s.pts}</span></li>`).join('')||'<li><span>No souls left</span><span></span></li>'}</ol></section>`}).join('')}
+     <div class="tc-stats">${ts.clues} clue${ts.clues===1?'':'s'} · ${ts.tokens} token${ts.tokens===1?'':'s'} · ${ts.cleared}/${S.settings.rooms.length} boxes</div>
+     <ol class="tc-list">${mem.map(s=>`<li><span>${esc(s.p.name)}${s.init!==s.p.team?' <i>(turned)</i>':''}</span><span>${s.pts}</span></li>`).join('')||'<li><span>No souls left</span><span></span></li>'}</ol></section>`}).join('')}</div>
   <div class="pc-foot">${W?`The ${TEAM[W].name} claimed the Heart of the Angel${S.heartBy?' · final answer by '+esc(nm(S.heartBy)):''}`:'The hunt is still on.'}</div></article>`}
-function personalCardHTML(s,n){
-  return `<article class="pcard"><div class="pc-top"><div class="label">THE DEMONS' WAGER · MMXXVI</div><h2 class="pc-name">${esc(s.p.name)}</h2>
-   <div class="pc-team"><span class="crest">${crestHTML(s.p.team)}</span><span>${s.init!==s.p.team?`${TEAM[s.init].one} → ${TEAM[s.p.team].one}`:TEAM[s.p.team].one}</span></div>
-   <div class="pc-result ${S.winner?(s.won?'won':'lost'):''}">${S.winner?(s.won?'Won the Wager':'Lost the Wager'):'Still hunting'}</div></div>
-   <div class="pc-score"><span class="rank">${ord(s.rank)}</span><span>of ${n} souls<br><b>${s.pts} points</b></span></div>
-   <div class="pc-split">Team <b>${s.teamPts}</b> · Individual <b>${s.indPts}</b></div>
-   ${s.mine.length<=4?`<p class="pc-line">${esc(s.line)}</p>`:''}
-   <div class="pc-break">
-     <div><h4>INDIVIDUAL</h4><ul>${s.mine.map(([l,v,d])=>`<li><span>${esc(l)}${d?`<small>${esc(d)}</small>`:''}</span><b>${v>0?'+':''}${v}</b></li>`).join('')||'<li class="none">None this time</li>'}</ul></div>
-     <div><h4>TEAM</h4><ul>${s.team.map(([l,v,d])=>`<li><span>${esc(l)}${d?`<small>${esc(d)}</small>`:''}</span><b>+${v}</b></li>`).join('')||'<li class="none">None this time</li>'}</ul></div>
-   </div>
-   ${(()=>{const h=s.ach.filter(a=>!['heart','keeper','snatch','untouched'].includes(a));return h.length?`<div class="pc-hon"><span class="lbl">HONOURS</span><ul>${h.slice(0,3).map(a=>`<li><b>${ACH[a][0]}</b><i> · ${ACH[a][1]}</i></li>`).join('')}</ul></div>`:'<div class="pc-hon"></div>'})()}</article>`}
+function personalCardHTML(s,n){const hon=s.ach.filter(a=>!['heart','keeper','snatch','untouched'].includes(a)).slice(0,3);
+  const li=(l,v,d,plus)=>`<li><span>${esc(l)}${d?`<small>${esc(d)}</small>`:''}</span><b>${v>0||plus?'+':''}${v}</b></li>`;
+  return `<article class="pcard pc">
+   <div class="pc-l"><div class="label">THE DEMONS' WAGER · MMXXVI</div><h2 class="pc-name">${esc(s.p.name)}</h2>
+    <div class="pc-team"><span class="crest">${crestHTML(s.p.team)}</span><span>${s.init!==s.p.team?`${TEAM[s.init].one} → ${TEAM[s.p.team].one}`:TEAM[s.p.team].one}</span></div>
+    <div class="pc-result ${S.winner?(s.won?'won':'lost'):''}">${S.winner?(s.won?'Won the Wager':'Lost the Wager'):'Still hunting'}</div>
+    <div class="pc-score"><span class="rank">${ord(s.rank)}</span><span>of ${n} souls<br><b>${s.pts} points</b></span></div>
+    <div class="pc-split">Team <b>${s.teamPts}</b> · Individual <b>${s.indPts}</b></div>
+    <p class="pc-line">${esc(s.line)}</p></div>
+   <div class="pc-r"><div class="pc-break">
+     <h4>INDIVIDUAL</h4><ul>${s.mine.map(([l,v,d])=>li(l,v,d)).join('')||'<li class="none">None this time</li>'}</ul>
+     <h4>TEAM</h4><ul>${s.team.map(([l,v,d])=>li(l,v,d,true)).join('')||'<li class="none">None this time</li>'}</ul></div>
+    ${hon.length?`<div class="pc-hon"><span class="lbl">HONOURS</span> ${hon.map(a=>`<b>${ACH[a][0]}</b> <i>(${ACH[a][1]})</i>`).join(' · ')}</div>`:''}</div></article>`}
 const cardsHTML=arr=>`<div class="cards">${teamCardHTML(arr)}${arr.map(s=>personalCardHTML(s,arr.length)).join('')}</div>`;
-function fitCards(){document.querySelectorAll('.pcard').forEach(c=>{c.classList.remove('fit1','fit2','fit3','fit4','fit5');for(const k of ['fit1','fit2','fit3','fit4','fit5']){if(c.scrollHeight<=c.clientHeight+1)break;c.classList.add(k)}})}
+const PRINT={
+  players:{label:'Player cards · A4 sheet',page:'A4',build:arr=>{const out=[];for(let i=0;i<arr.length;i+=10)out.push(`<div class="sheet">${arr.slice(i,i+10).map(s=>personalCardHTML(s,arr.length)).join('')}</div>`);return out.join('')}},
+  team:{label:'Team card ×10 · A4 sheet',page:'A4',build:arr=>{const c=teamCardHTML(arr);return `<div class="sheet">${Array(10).fill(c).join('')}</div>`}},
+  single:{label:'One card per page',page:'85.6mm 53.98mm',build:arr=>`<div class="singles">${teamCardHTML(arr)}${arr.map(s=>personalCardHTML(s,arr.length)).join('')}</div>`}};
+const FIT_STEPS=['fit1','fit2','fit3','fit4','fit5'];
+function fitCards(root){(root||document).querySelectorAll('.pc-name').forEach(n=>{n.style.fontSize='';let f=parseFloat(getComputedStyle(n).fontSize);while(n.scrollWidth>n.clientWidth+1&&f>8){f-=1;n.style.fontSize=f+'px'}});
+  (root||document).querySelectorAll('.pcard').forEach(c=>{c.classList.remove(...FIT_STEPS);for(const k of FIT_STEPS){if(c.scrollHeight<=c.clientHeight+1&&[...c.querySelectorAll('.pc-r,.tc')].every(x=>x.scrollHeight<=x.clientHeight+1))break;c.classList.add(k)}})}
+function pageRule(page){let el=document.getElementById('page-size');if(!el){el=document.createElement('style');el.id='page-size';document.head.appendChild(el)}el.textContent=`@page{size:${page};margin:0}`}
+async function printCards(mode){const m=PRINT[mode];if(!m)return;
+  if(IN_FRAME){saveCards(mode);return}
+  const root=$('#print-root');root.innerHTML=m.build(scores());pageRule(m.page);
+  if(document.fonts&&document.fonts.ready)await document.fonts.ready;fitCards(root);
+  await sleep(60);window.print()}
+window.addEventListener('afterprint',()=>{const r=document.getElementById('print-root');if(r)r.innerHTML=''});
 function rScores(){if(!S.players.length){$('#s-scores').innerHTML=`<div class="panel" style="margin-top:12vh;text-align:center"><h2>No souls yet</h2><p>Scorecards appear once the hunt has players.</p></div>`;return}
-  pageStyle();const arr=scores();
+  const arr=scores();
   $('#s-scores').innerHTML=`<div class="sc-head"><div class="label">THE DEMONS' WAGER · ALL HALLOWS' EVE MMXXVI</div><h1>The Book of Souls</h1>
-   <p class="label">${S.winner?`The ${TEAM[S.winner].name} claimed the Heart of the Angel.`:'The hunt is still on.'} One team card, then one card for each player.</p>
-   <div class="row no-print" style="justify-content:center"><label class="row" style="gap:8px"><span class="label">Card size</span><select id="card-size">${Object.entries(CARD).map(([k,v])=>`<option value="${k}" ${S.settings.card===k?'selected':''}>${v[3]}</option>`).join('')}</select></label>
-   ${IN_FRAME?'<button class="btn primary" data-action="save-cards" id="save-cards">Save scorecards to print</button>':'<button class="btn primary" data-action="print">Print scorecards</button>'}<button class="btn" data-action="nav" data-to="board">Back to the hunt</button></div>
-   <p class="label">In the print dialog, pick the same paper size and set margins to None.</p>
+   <p class="label">${S.winner?`The ${TEAM[S.winner].name} claimed the Heart of the Angel.`:'The hunt is still on.'} Cards are 85.6 × 54 mm (bank-card size), shown enlarged here.</p>
+   <div class="print-opts no-print">
+     <button class="btn primary" data-action="print-cards" data-mode="players">${IN_FRAME?'Save':'Print'} player cards (A4, up to 10 per sheet)</button>
+     <button class="btn primary" data-action="print-cards" data-mode="team">${IN_FRAME?'Save':'Print'} team card ×10 (A4)</button>
+     <button class="btn" data-action="print-cards" data-mode="single">${IN_FRAME?'Save':'Print'} one card per page</button>
+     <button class="btn" data-action="nav" data-to="board">Back to the hunt</button></div>
+   <p class="label">In the print dialog: paper A4 (or the card size for one-per-page), margins None, scale 100%, and tick Background graphics. Cut along the dashed lines.</p>
    <p class="label" id="save-msg"></p></div>
   ${cardsHTML(arr)}`;
-  $('#card-size').onchange=e=>{S.settings.card=e.target.value;save();pageStyle();fitCards()};
-  fitCards();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(S.screen==='scores')fitCards()})}
-async function saveCards(){const msg=$('#save-msg');try{const dl=await window.claude?.use?.('downloads');
-  if(!dl){msg.textContent='Saving is not available here. Open the scorecards from the desktop app or claude.ai in Chrome.';return}
-  pageStyle();const css=[...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');
-  const html=`<!doctype html><html><head><meta charset="utf-8"><title>Scorecards · The Demons' Wager</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Spectral:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&display=swap"><style>${css}
-body{background:#fff;padding:20px}@media print{body{padding:0!important}}</style></head><body>${cardsHTML(scores())}<script>${fitCards.toString()}\nwindow.onload=()=>{fitCards();setTimeout(()=>{fitCards();window.print()},800)}<\/script></body></html>`;
-  await dl.save({filename:'demons-wager-scorecards.html',data:html});msg.textContent='Saved. Open the file in Chrome and it will ask to print.'}
+  fitCards($('#s-scores'));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(S.screen==='scores')fitCards($('#s-scores'))})}
+async function saveCards(mode){const msg=$('#save-msg');const m=PRINT[mode]||PRINT.players;try{const dl=await window.claude?.use?.('downloads');
+  if(!dl){msg.textContent='Saving is not available here. Open the site in Chrome to print.';return}
+  const css=[...document.querySelectorAll('style')].filter(s=>s.id!=='page-size').map(s=>s.textContent).join('\n');
+  const html=`<!doctype html><html><head><meta charset="utf-8"><title>${m.label} · The Demons' Wager</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Spectral:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&display=swap"><style>${css}
+@page{size:${m.page};margin:0}#print-root{position:static;visibility:visible;left:auto}body{background:#fff;margin:0;padding:0}</style></head><body><div id="print-root">${m.build(scores())}</div><script>const FIT_STEPS=${JSON.stringify(FIT_STEPS)};${fitCards.toString()}\nwindow.onload=()=>{(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{fitCards();setTimeout(()=>window.print(),400)})}<\/script></body></html>`;
+  await dl.save({filename:`demons-wager-${mode}.html`,data:html});msg.textContent='Saved. Open the file in Chrome and it will ask to print.'}
   catch(e){msg.textContent=e&&e.code==='declined'?'Save cancelled.':'The file could not be saved. Try again.'}}
 
 /* ---------- events ---------- */
@@ -1361,8 +1406,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');
   case 'reset':if(!UI.resetArm){UI.resetArm=true;$('#reset-btn').textContent='Click again to wipe players, deals and the Chronicle';break}
     UI.resetArm=false;S=fresh(S.settings);save();closeModal();resetDeal();UI.picked=null;render();break;
   case 'fullscreen':try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(err){}break;
-  case 'print':window.print();break;
-  case 'save-cards':saveCards();break;
+  case 'print-cards':printCards(b.dataset.mode);break;
   }});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal();else if(e.key==='Escape'&&!$('#vault').hidden)closeVault();
   if(S.screen==='grimoire'&&$('#modal').hidden&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){if(e.key==='ArrowRight'){hush();turn(1)}if(e.key==='ArrowLeft'){hush();turn(-1)}}});
