@@ -421,72 +421,82 @@ textarea{width:100%;resize:vertical}
   background-color:#e3d0a6;background-image:radial-gradient(ellipse at 50% 50%,rgba(255,248,225,.35) 0,transparent 55%),radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(105,62,20,.32) 100%),radial-gradient(circle at 82% 78%,rgba(140,88,30,.16) 0,rgba(140,88,30,.08) 9%,transparent 16%),radial-gradient(circle at 14% 18%,rgba(140,88,30,.10) 0,transparent 12%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .2 0 0 0 0 .07 0 0 0 .42 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='260'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .03' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");background-size:cover,cover,cover,cover,80mm 80mm,cover;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pcard::after{content:"";position:absolute;inset:1.3mm;border:2.5px double rgba(74,16,24,.5);border-radius:2mm;pointer-events:none}
-.pcard .label{color:var(--sepia);font-size:.78em;letter-spacing:.08em;white-space:nowrap;font-family:var(--f-label)}
+.pcard .label{color:var(--sepia);font-size:.78em;letter-spacing:.08em;white-space:nowrap;overflow:hidden;max-width:100%;font-family:var(--f-label)}
 .pcard h2{color:#4a1018;line-height:1;font-weight:400}
 
-/* player card: two columns */
-.pc{display:grid;grid-template-columns:37% 1fr;column-gap:2.6mm}
-.pc-l{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-right:1px solid rgba(60,30,10,.28);padding-right:2.4mm;min-width:0}
-.pc-r{display:flex;flex-direction:column;min-width:0;min-height:0}
-.pc-name{font-size:3em;margin:.05em 0 .05em;white-space:nowrap;max-width:100%;overflow:hidden}
-.pc-team{display:flex;justify-content:center;align-items:center;gap:.35em;font-family:var(--f-label);font-size:1.15em;letter-spacing:.04em}
-.pc-team .crest{width:1.6em;height:1.6em}
-.pc-result{display:inline-block;margin-top:.35em;font-family:var(--f-display);font-size:1.45em;padding:0 .6em;border-radius:999px;border:1.5px solid currentColor;color:#6b4a2a;white-space:nowrap}
+/* Card text is sized to fill each card: every [data-fit] box starts large and steps down until it fits. */
+/* player card (one face): two columns */
+.pc{display:grid;grid-template-columns:38% minmax(0,1fr);grid-template-rows:minmax(0,1fr);column-gap:2.4mm}
+.pc-l{display:flex;flex-direction:column;align-items:center;justify-content:safe center;text-align:center;border-right:1px solid rgba(60,30,10,.28);padding-right:2.2mm;min-width:0;min-height:0;overflow:hidden}
+.pc-r{display:flex;flex-direction:column;justify-content:safe center;min-width:0;min-height:0;overflow:hidden}
+.pc-l .label{font-size:.62em;letter-spacing:.04em}
+.pcard .label,.pc-name,.pb-head h2{flex:none}
+.pc-name{font-size:2.3em;margin:.02em 0;white-space:nowrap;max-width:100%;overflow:hidden;line-height:1.05}
+.pc-team{display:flex;justify-content:center;align-items:center;gap:.35em;font-family:var(--f-label);font-size:1em;letter-spacing:.04em}
+.pc-team .crest{width:1.5em;height:1.5em}
+.pc-result{display:inline-block;margin-top:.3em;font-family:var(--f-display);font-size:1.2em;padding:0 .55em;border-radius:999px;border:1.5px solid currentColor;color:#6b4a2a;white-space:nowrap}
 .pc-result.won{color:#7a5a12;background:rgba(226,170,76,.22)}
 .pc-result.lost{color:#6b1020}
-.pc-score{display:flex;align-items:center;justify-content:center;gap:.45em;margin:.35em 0 .1em;font-variant-numeric:tabular-nums;line-height:1.15}
-.pc-score .rank{font-family:var(--f-display);font-size:2.9em;line-height:1;color:var(--wine)}
+.pc-score{display:flex;align-items:center;justify-content:center;gap:.4em;margin:.25em 0 .05em;font-variant-numeric:tabular-nums;line-height:1.1}
+.pc-score .rank{font-family:var(--f-display);font-size:2.4em;line-height:1;color:var(--wine)}
 .pc-score span:last-child{text-align:left}
-.pc-split{font-family:var(--f-label);letter-spacing:.04em;font-size:.95em;color:#6b4a2a}
+.pc-split{font-family:var(--f-label);letter-spacing:.03em;font-size:.88em;color:#6b4a2a}
 .pc-split b{color:#4a1018;font-family:var(--f-body);font-weight:600;letter-spacing:0}
-.pc-line{font-style:italic;margin:.35em 0 0;font-size:.9em;line-height:1.2}
-.pc-break h4{margin:.15em 0 .1em;font-family:var(--f-label);font-weight:400;letter-spacing:.12em;color:var(--sepia);font-size:.85em;border-bottom:1px solid rgba(60,30,10,.3)}
+.pc-line{font-style:italic;margin:.3em 0 0;font-size:.85em;line-height:1.2}
+.pc-break h4{margin:.25em 0 .1em;font-family:var(--f-label);font-weight:400;letter-spacing:.1em;color:var(--sepia);font-size:.8em;border-bottom:1px solid rgba(60,30,10,.3)}
 .pc-break h4:first-child{margin-top:0}
 .pc-break ul{list-style:none;margin:0;padding:0}
-.pc-break li{display:flex;justify-content:space-between;gap:.5em;padding:.02em 0;line-height:1.18}
+.pc-break li{display:flex;justify-content:space-between;gap:.5em;padding:.04em 0;line-height:1.2}
 .pc-break li b{font-variant-numeric:tabular-nums;color:#4a1018;font-family:var(--f-body);font-weight:600}
-.pc-break li small{display:block;font-size:.82em;line-height:1.15;color:#6b4a2a;font-style:italic}
+.pc-break li small{display:block;font-size:.8em;line-height:1.15;color:#6b4a2a;font-style:italic}
 .pc-break li.none{color:#8a6a44;font-style:italic}
-.pc-hon{margin-top:auto;padding-top:.25em;font-size:.82em;color:#6b4a2a;line-height:1.2}
+.pc-hon{margin-top:.45em;font-size:.8em;color:#6b4a2a;line-height:1.25}
 .pc-hon b{font-family:var(--f-label);font-weight:400;color:#4a1018}
-.pc-hon .lbl{font-family:var(--f-label);letter-spacing:.12em;color:var(--sepia)}
-.pc-l .label{font-size:.68em;letter-spacing:.04em}
-.pcard.fit1 .pc-line{display:none}
-.pcard.fit2 .pc-r{font-size:.93em}
-.pcard.fit3 .pc-r{font-size:.86em}
-.pcard.fit4 .pc-r{font-size:.8em}
-.pcard.fit5 .pc-r{font-size:.74em}
+.pc-hon .lbl{font-family:var(--f-label);letter-spacing:.1em;color:var(--sepia)}
+
+/* two-face: front (name + rank) */
+.pf{display:flex;flex-direction:column;align-items:center;justify-content:safe center;text-align:center}
+.pf .label{font-size:.6em;letter-spacing:.1em}
+.pf .pc-name{font-size:2.6em}
+.pf .pc-line{max-width:92%}
+/* two-face: back (score details) */
+.pbk{display:flex;flex-direction:column}
+.pb-head{overflow:hidden;flex:none;display:flex;justify-content:space-between;align-items:baseline;gap:.6em;border-bottom:1px solid rgba(60,30,10,.35);padding-bottom:.1em;margin-bottom:.25em}
+.pb-head h2{font-size:1.5em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pb-head .tot{font-family:var(--f-label);color:#6b4a2a;white-space:nowrap}
+.pb-head .tot b{font-family:var(--f-body);font-weight:600;color:#4a1018}
+.pb-cols{column-count:2;column-gap:3mm;column-fill:balance;flex:1;min-height:0}
+.pb-cols li,.pb-cols .pc-hon,.pb-cols .sec-team{break-inside:avoid}
+.pb-cols h4{break-after:avoid}
+.pb-cols .sec-team h4{margin-top:0}
 
 /* team card */
-.team-card{display:flex;flex-direction:column}
+.team-card{display:flex;flex-direction:column;justify-content:safe center}
 .tc-top{display:flex;align-items:baseline;justify-content:center;gap:.6em}
-.team-card h2{font-size:2.1em}
-.tc-cols{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin-top:.35em;flex:1;min-height:0}
-.tc{border-radius:1.5mm;padding:.35em .5em;border:1px solid rgba(60,30,10,.3);min-width:0;overflow:hidden}
+.tc-top .label{font-size:.62em}
+.team-card h2{font-size:1.7em}
+.tc-cols{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin-top:.3em}
+.tc{border-radius:1.5mm;padding:.3em .45em;border:1px solid rgba(60,30,10,.3);min-width:0}
 .tc.win{border:1.5px solid #b8862e;background:rgba(226,170,76,.18)}
-.tc-head{display:flex;align-items:center;gap:.4em}
-.tc-head .crest{width:2.2em;height:2.2em;flex:none}
-.tc .tag{font-family:var(--f-label);letter-spacing:.14em;font-size:.85em;color:var(--sepia)}
+.tc-head{display:flex;align-items:center;gap:.35em}
+.tc-head .crest{width:1.9em;height:1.9em;flex:none}
+.tc .tag{font-family:var(--f-label);letter-spacing:.12em;font-size:.8em;color:var(--sepia)}
 .tc.win .tag{color:#7a5a12;font-weight:600}
 .tc.lose .tag{color:#6b1020;font-weight:600}
-.tc h3{font-size:1.75em;line-height:1;color:#4a1018}
-.tc-stats{font-size:.82em;color:#6b4a2a;margin:.1em 0 .15em;line-height:1.2}
-.tc-list{list-style:none;margin:0;padding:0;font-size:1.18em}
+.tc h3{font-size:1.4em;line-height:1;color:#4a1018}
+.tc-stats{font-size:.8em;color:#6b4a2a;margin:.1em 0 .15em;line-height:1.2}
+.tc-list{list-style:none;margin:0;padding:0}
 .tc-list li{display:flex;justify-content:space-between;gap:.4em;min-width:0;border-bottom:1px dotted rgba(60,30,10,.3);padding:.02em 0;font-variant-numeric:tabular-nums;line-height:1.2}
 .tc-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tc-list i{color:#6b4a2a;font-size:.85em}
-.pc-foot{margin-top:.3em;text-align:center;font-size:.85em;color:#6b4a2a;font-family:var(--f-label);letter-spacing:.04em}
-.team-card.fit1 .tc-stats + .tc-stats{display:none}
-.team-card.fit2 .tc-list{font-size:1em}
-.team-card.fit3 .tc-list{font-size:.88em}.team-card.fit3 .tc h3{font-size:1.5em}
-.team-card.fit4 .tc-list{font-size:.75em}
-.team-card.fit5 .pc-foot{display:none}
+.tc-list i{color:#6b4a2a;font-size:.8em}
+.pc-foot{margin-top:.3em;text-align:center;font-size:.8em;color:#6b4a2a;font-family:var(--f-label);letter-spacing:.03em}
 
 /* print layouts (built off-screen, shown only when printing) */
 #print-root{position:fixed;left:-10000px;top:0;visibility:hidden;pointer-events:none}
-.sheet{width:210mm;height:297mm;box-sizing:border-box;display:grid;grid-template-columns:repeat(2,85.6mm);grid-auto-rows:53.98mm;gap:2mm;justify-content:center;align-content:center;background:#fff;break-after:page;page-break-after:always}
+.sheet{position:relative;width:210mm;height:297mm;box-sizing:border-box;display:grid;grid-template-columns:repeat(2,85.6mm);grid-template-rows:repeat(5,53.98mm);gap:2mm;justify-content:center;align-content:center;background:#fff;break-after:page;page-break-after:always;overflow:hidden}
 .sheet:last-child{break-after:auto;page-break-after:auto}
 .sheet .pcard{border-radius:0;outline:.25mm dashed #9a9a9a;outline-offset:1mm}
+.sheet-tag{position:absolute;left:0;right:0;top:4mm;text-align:center;font:8pt/1.2 Arial,sans-serif;color:#999;letter-spacing:.05em}
 .singles .pcard{break-after:page;page-break-after:always;border-radius:0}
 .singles .pcard:last-child{break-after:auto;page-break-after:auto}
 
@@ -1281,34 +1291,46 @@ function sentence(s){const parts=[];const one=t=>TEAM[t].one.toLowerCase();
   return parts[0]}
 const ord=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
 function teamCardHTML(arr){const W=S.winner;const order=W?[W,other(W)]:['humans','vampires'];
-  return `<article class="pcard team-card"><div class="tc-top"><span class="label">THE DEMONS' WAGER · MMXXVI</span><h2>The Reckoning</h2></div>
+  return `<article class="pcard team-card" data-fit="6:13"><div class="tc-top"><span class="label">THE DEMONS' WAGER · MMXXVI</span><h2>The Reckoning</h2></div>
   <div class="tc-cols">${order.map(t=>{const ts=teamStats(t);const mem=arr.filter(s=>s.p.team===t);const cls=W?(t===W?'win':'lose'):'';
     return `<section class="tc ${cls}"><div class="tc-head"><div class="crest">${crestHTML(t)}</div><div><div class="tag">${W?(t===W?'THE WINNERS':'THE LOSERS'):'STILL HUNTING'}</div><h3>${TEAM[t].name}</h3></div></div>
-     <div class="tc-stats">Times: ${S.settings.rooms.map((r,i)=>{const rt=roomTime(t,i);return rt&&rt.done?fmtDur(rt.ms)+(isFast(rt.ms)?' ✦':''):'–'}).join(' · ')}</div>
-     <div class="tc-stats">${ts.clues} clue${ts.clues===1?'':'s'} · ${ts.tokens} token${ts.tokens===1?'':'s'} · ${ts.cleared}/${S.settings.rooms.length} boxes</div>
+     <div class="tc-stats">Times: ${S.settings.rooms.map((r,i)=>{const rt=roomTime(t,i);return rt&&rt.done?fmtDur(rt.ms)+(isFast(rt.ms)?' ✦':''):'–'}).join(' · ')}<br>${ts.clues} clue${ts.clues===1?'':'s'} · ${ts.tokens} token${ts.tokens===1?'':'s'} · ${ts.cleared}/${S.settings.rooms.length} boxes</div>
      <ol class="tc-list">${mem.map(s=>`<li><span>${esc(s.p.name)}${s.init!==s.p.team?' <i>(turned)</i>':''}</span><span>${s.pts}</span></li>`).join('')||'<li><span>No souls left</span><span></span></li>'}</ol></section>`}).join('')}</div>
   <div class="pc-foot">${W?`The ${TEAM[W].name} claimed the Heart of the Angel${S.heartBy?' · final answer by '+esc(nm(S.heartBy)):''}`:'The hunt is still on.'}</div></article>`}
-function personalCardHTML(s,n){const hon=s.ach.filter(a=>!['heart','keeper','snatch','untouched'].includes(a)).slice(0,3);
-  const li=(l,v,d,plus)=>`<li><span>${esc(l)}${d?`<small>${esc(d)}</small>`:''}</span><b>${v>0||plus?'+':''}${v}</b></li>`;
-  return `<article class="pcard pc">
-   <div class="pc-l"><div class="label">THE DEMONS' WAGER · MMXXVI</div><h2 class="pc-name">${esc(s.p.name)}</h2>
+const honOf=s=>s.ach.filter(a=>!['heart','keeper','snatch','untouched'].includes(a)).slice(0,3);
+const ptLi=(l,v,d,plus)=>`<li><span>${esc(l)}${d?`<small>${esc(d)}</small>`:''}</span><b>${v>0||plus?'+':''}${v}</b></li>`;
+const indHTML=s=>`<h4>INDIVIDUAL</h4><ul>${s.mine.map(([l,v,d])=>ptLi(l,v,d)).join('')||'<li class="none">None this time</li>'}</ul>`;
+const teamPtsHTML=s=>`<h4>TEAM</h4><ul>${s.team.map(([l,v,d])=>ptLi(l,v,d,true)).join('')||'<li class="none">None this time</li>'}</ul>`;
+const honHTML=s=>{const h=honOf(s);return h.length?`<div class="pc-hon"><span class="lbl">HONOURS</span> ${h.map(a=>`<b>${ACH[a][0]}</b> <i>(${ACH[a][1]})</i>`).join(' · ')}</div>`:''};
+const idHTML=(s,n)=>`<div class="label">THE DEMONS' WAGER · MMXXVI</div><h2 class="pc-name">${esc(s.p.name)}</h2>
     <div class="pc-team"><span class="crest">${crestHTML(s.p.team)}</span><span>${s.init!==s.p.team?`${TEAM[s.init].one} → ${TEAM[s.p.team].one}`:TEAM[s.p.team].one}</span></div>
     <div class="pc-result ${S.winner?(s.won?'won':'lost'):''}">${S.winner?(s.won?'Won the Wager':'Lost the Wager'):'Still hunting'}</div>
     <div class="pc-score"><span class="rank">${ord(s.rank)}</span><span>of ${n} souls<br><b>${s.pts} points</b></span></div>
-    <div class="pc-split">Team <b>${s.teamPts}</b> · Individual <b>${s.indPts}</b></div>
-    <p class="pc-line">${esc(s.line)}</p></div>
-   <div class="pc-r"><div class="pc-break">
-     <h4>INDIVIDUAL</h4><ul>${s.mine.map(([l,v,d])=>li(l,v,d)).join('')||'<li class="none">None this time</li>'}</ul>
-     <h4>TEAM</h4><ul>${s.team.map(([l,v,d])=>li(l,v,d,true)).join('')||'<li class="none">None this time</li>'}</ul></div>
-    ${hon.length?`<div class="pc-hon"><span class="lbl">HONOURS</span> ${hon.map(a=>`<b>${ACH[a][0]}</b> <i>(${ACH[a][1]})</i>`).join(' · ')}</div>`:''}</div></article>`}
-const cardsHTML=arr=>`<div class="cards">${teamCardHTML(arr)}${arr.map(s=>personalCardHTML(s,arr.length)).join('')}</div>`;
+    <div class="pc-split">Team <b>${s.teamPts}</b> · Individual <b>${s.indPts}</b></div>`;
+function personalCardHTML(s,n){
+  return `<article class="pcard pc"><div class="pc-l" data-fit="6:13">${idHTML(s,n)}<p class="pc-line">${esc(s.line)}</p></div>
+   <div class="pc-r" data-fit="5.5:11"><div class="pc-break">${indHTML(s)}${teamPtsHTML(s)}</div>${honHTML(s)}</div></article>`}
+const frontCardHTML=(s,n)=>`<article class="pcard pf" data-fit="7:17">${idHTML(s,n)}<p class="pc-line">${esc(s.line)}</p></article>`;
+const backCardHTML=s=>`<article class="pcard pbk" data-fit="6.5:15"><div class="pb-head"><h2>${esc(s.p.name)}</h2><span class="tot">Team <b>${s.teamPts}</b> + Individual <b>${s.indPts}</b> = <b>${s.pts}</b></span></div>
+   <div class="pb-cols pc-break">${indHTML(s)}<div class="sec-team">${teamPtsHTML(s)}</div>${honHTML(s)}</div></article>`;
+const cardsHTML=arr=>`<div class="cards">${teamCardHTML(arr)}${arr.map(s=>UI.cview==='two'?frontCardHTML(s,arr.length)+backCardHTML(s):personalCardHTML(s,arr.length)).join('')}</div>`;
+// fixed 2 × 5 grid; each card is pinned to a slot so fronts and backs line up exactly
+const slotStyle=(i,back)=>{let r=Math.floor(i/2),c=i%2;if(back){if((S.settings.flip||'long')==='long')c=1-c;else r=4-r}return `style="grid-row:${r+1};grid-column:${c+1}"`};
+const sheets=(arr,card,tag,back)=>{const out=[];for(let i=0;i<arr.length;i+=10){const pg=Math.floor(i/10)+1,pgs=Math.ceil(arr.length/10);
+  out.push(`<div class="sheet">${tag?`<div class="sheet-tag">${tag}${pgs>1?` · sheet ${pg} of ${pgs}`:''}</div>`:''}${arr.slice(i,i+10).map((s,k)=>card(s).replace('<article ',`<article ${slotStyle(k,back)} `)).join('')}</div>`)}return out.join('')};
 const PRINT={
-  players:{label:'Player cards · A4 sheet',page:'A4',build:arr=>{const out=[];for(let i=0;i<arr.length;i+=10)out.push(`<div class="sheet">${arr.slice(i,i+10).map(s=>personalCardHTML(s,arr.length)).join('')}</div>`);return out.join('')}},
-  team:{label:'Team card ×10 · A4 sheet',page:'A4',build:arr=>{const c=teamCardHTML(arr);return `<div class="sheet">${Array(10).fill(c).join('')}</div>`}},
+  players:{label:'Player cards · A4 sheet',page:'A4',build:arr=>sheets(arr,s=>personalCardHTML(s,arr.length))},
+  fronts:{label:'Two-sided cards · fronts',page:'A4',build:arr=>sheets(arr,s=>frontCardHTML(s,arr.length),'FRONTS · print this side first',false)},
+  backs:{label:'Two-sided cards · backs',page:'A4',build:arr=>sheets(arr,s=>backCardHTML(s),`BACKS · flip the printed sheet on its ${(S.settings.flip||'long')==='long'?'long (side)':'short (top)'} edge and feed it again`,true)},
+  team:{label:'Team card ×10 · A4 sheet',page:'A4',build:arr=>sheets(Array(10).fill(arr),a=>teamCardHTML(a))},
   single:{label:'One card per page',page:'85.6mm 53.98mm',build:arr=>`<div class="singles">${teamCardHTML(arr)}${arr.map(s=>personalCardHTML(s,arr.length)).join('')}</div>`}};
-const FIT_STEPS=['fit1','fit2','fit3','fit4','fit5'];
-function fitCards(root){(root||document).querySelectorAll('.pc-name').forEach(n=>{n.style.fontSize='';let f=parseFloat(getComputedStyle(n).fontSize);while(n.scrollWidth>n.clientWidth+1&&f>8){f-=1;n.style.fontSize=f+'px'}});
-  (root||document).querySelectorAll('.pcard').forEach(c=>{c.classList.remove(...FIT_STEPS);for(const k of FIT_STEPS){if(c.scrollHeight<=c.clientHeight+1&&[...c.querySelectorAll('.pc-r,.tc')].every(x=>x.scrollHeight<=x.clientHeight+1))break;c.classList.add(k)}})}
+// fill the space: start each box at its largest size and step down until nothing spills
+function fitCards(root){root=root||document;
+  const spill=el=>el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1;
+  const over=el=>spill(el)||[...el.querySelectorAll('.pb-cols,.pb-head')].some(spill);
+  root.querySelectorAll('[data-fit]').forEach(el=>{const [mn,mx]=el.dataset.fit.split(':').map(Number);let f=mx;el.style.fontSize=f+'pt';
+    while(f>mn&&over(el)){f=Math.round((f-.25)*100)/100;el.style.fontSize=f+'pt'}
+    el.querySelectorAll('.pc-name,.label').forEach(n=>{n.style.fontSize='';let p=parseFloat(getComputedStyle(n).fontSize);while(n.scrollWidth>n.clientWidth+1&&p>5){p-=.5;n.style.fontSize=p+'px'}})})}
 function pageRule(page){let el=document.getElementById('page-size');if(!el){el=document.createElement('style');el.id='page-size';document.head.appendChild(el)}el.textContent=`@page{size:${page};margin:0}`}
 async function printCards(mode){const m=PRINT[mode];if(!m)return;
   if(IN_FRAME){saveCards(mode);return}
@@ -1321,19 +1343,25 @@ function rScores(){if(!S.players.length){$('#s-scores').innerHTML=`<div class="p
   $('#s-scores').innerHTML=`<div class="sc-head"><div class="label">THE DEMONS' WAGER · ALL HALLOWS' EVE MMXXVI</div><h1>The Book of Souls</h1>
    <p class="label">${S.winner?`The ${TEAM[S.winner].name} claimed the Heart of the Angel.`:'The hunt is still on.'} Cards are 85.6 × 54 mm (bank-card size), shown enlarged here.</p>
    <div class="print-opts no-print">
-     <button class="btn primary" data-action="print-cards" data-mode="players">${IN_FRAME?'Save':'Print'} player cards (A4, up to 10 per sheet)</button>
+     <button class="btn primary" data-action="print-cards" data-mode="players">${IN_FRAME?'Save':'Print'} player cards (A4)</button>
      <button class="btn primary" data-action="print-cards" data-mode="team">${IN_FRAME?'Save':'Print'} team card ×10 (A4)</button>
      <button class="btn" data-action="print-cards" data-mode="single">${IN_FRAME?'Save':'Print'} one card per page</button>
      <button class="btn" data-action="nav" data-to="board">Back to the hunt</button></div>
+   <div class="print-opts no-print" style="align-items:center"><span class="label">Two-sided cards (A4):</span>
+     <button class="btn primary" data-action="print-cards" data-mode="fronts">1. ${IN_FRAME?'Save':'Print'} fronts</button>
+     <button class="btn primary" data-action="print-cards" data-mode="backs">2. ${IN_FRAME?'Save':'Print'} backs</button>
+     <label class="row" style="gap:6px"><span class="label">Flip the paper on the</span><select id="flip"><option value="long" ${(S.settings.flip||'long')==='long'?'selected':''}>long edge (side)</option><option value="short" ${S.settings.flip==='short'?'selected':''}>short edge (top)</option></select></label></div>
+   <div class="print-opts no-print" style="align-items:center"><span class="label">Preview below:</span><button class="btn small ${UI.cview==='two'?'':'primary'}" data-action="cview" data-v="one">One-sided cards</button><button class="btn small ${UI.cview==='two'?'primary':''}" data-action="cview" data-v="two">Two-sided (front, then back)</button></div>
    <p class="label">In the print dialog: paper A4 (or the card size for one-per-page), margins None, scale 100%, and tick Background graphics. Cut along the dashed lines.</p>
    <p class="label" id="save-msg"></p></div>
   ${cardsHTML(arr)}`;
+  $('#flip').onchange=e=>{S.settings.flip=e.target.value;save()};
   fitCards($('#s-scores'));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(S.screen==='scores')fitCards($('#s-scores'))})}
 async function saveCards(mode){const msg=$('#save-msg');const m=PRINT[mode]||PRINT.players;try{const dl=await window.claude?.use?.('downloads');
   if(!dl){msg.textContent='Saving is not available here. Open the site in Chrome to print.';return}
   const css=[...document.querySelectorAll('style')].filter(s=>s.id!=='page-size').map(s=>s.textContent).join('\n');
   const html=`<!doctype html><html><head><meta charset="utf-8"><title>${m.label} · The Demons' Wager</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Spectral:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&display=swap"><style>${css}
-@page{size:${m.page};margin:0}#print-root{position:static;visibility:visible;left:auto}body{background:#fff;margin:0;padding:0}</style></head><body><div id="print-root">${m.build(scores())}</div><script>const FIT_STEPS=${JSON.stringify(FIT_STEPS)};${fitCards.toString()}\nwindow.onload=()=>{(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{fitCards();setTimeout(()=>window.print(),400)})}<\/script></body></html>`;
+@page{size:${m.page};margin:0}#print-root{position:static;visibility:visible;left:auto}body{background:#fff;margin:0;padding:0}</style></head><body><div id="print-root">${m.build(scores())}</div><script>${fitCards.toString()}\nwindow.onload=()=>{(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{fitCards();setTimeout(()=>window.print(),400)})}<\/script></body></html>`;
   await dl.save({filename:`demons-wager-${mode}.html`,data:html});msg.textContent='Saved. Open the file in Chrome and it will ask to print.'}
   catch(e){msg.textContent=e&&e.code==='declined'?'Save cancelled.':'The file could not be saved. Try again.'}}
 
@@ -1407,6 +1435,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');
     UI.resetArm=false;S=fresh(S.settings);save();closeModal();resetDeal();UI.picked=null;render();break;
   case 'fullscreen':try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(err){}break;
   case 'print-cards':printCards(b.dataset.mode);break;
+  case 'cview':UI.cview=b.dataset.v;rScores();break;
   }});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal();else if(e.key==='Escape'&&!$('#vault').hidden)closeVault();
   if(S.screen==='grimoire'&&$('#modal').hidden&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){if(e.key==='ArrowRight'){hush();turn(1)}if(e.key==='ArrowLeft'){hush();turn(-1)}}});
