@@ -496,6 +496,9 @@ textarea{width:100%;resize:vertical}
 .sheet{position:relative;width:210mm;height:297mm;box-sizing:border-box;display:grid;grid-template-columns:repeat(2,85.6mm);grid-template-rows:repeat(5,53.98mm);gap:2mm;justify-content:center;align-content:center;background:#fff;break-after:page;page-break-after:always;overflow:hidden}
 .sheet:last-child{break-after:auto;page-break-after:auto}
 .sheet .pcard{border-radius:0;outline:.25mm dashed #9a9a9a;outline-offset:1mm}
+.sheet.fill{grid-template-columns:repeat(2,99mm);grid-template-rows:repeat(5,55.8mm)}
+.sheet.fill .pcard{width:99mm;height:55.8mm}
+.sheet.fill .sheet-tag{top:1mm;font-size:6pt}
 .sheet-tag{position:absolute;left:0;right:0;top:4mm;text-align:center;font:8pt/1.2 Arial,sans-serif;color:#999;letter-spacing:.05em}
 .singles .pcard{break-after:page;page-break-after:always;border-radius:0}
 .singles .pcard:last-child{break-after:auto;page-break-after:auto}
@@ -1317,7 +1320,7 @@ const cardsHTML=arr=>`<div class="cards">${teamCardHTML(arr)}${arr.map(s=>UI.cvi
 // fixed 2 × 5 grid; each card is pinned to a slot so fronts and backs line up exactly
 const slotStyle=(i,back)=>{let r=Math.floor(i/2),c=i%2;if(back){if((S.settings.flip||'long')==='long')c=1-c;else r=4-r}return `style="grid-row:${r+1};grid-column:${c+1}"`};
 const sheets=(arr,card,tag,back)=>{const out=[];for(let i=0;i<arr.length;i+=10){const pg=Math.floor(i/10)+1,pgs=Math.ceil(arr.length/10);
-  out.push(`<div class="sheet">${tag?`<div class="sheet-tag">${tag}${pgs>1?` · sheet ${pg} of ${pgs}`:''}</div>`:''}${arr.slice(i,i+10).map((s,k)=>card(s).replace('<article ',`<article ${slotStyle(k,back)} `)).join('')}</div>`)}return out.join('')};
+  out.push(`<div class="sheet ${(S.settings.sheetFit||'fill')==='fill'?'fill':''}">${tag?`<div class="sheet-tag">${tag}${pgs>1?` · sheet ${pg} of ${pgs}`:''}</div>`:''}${arr.slice(i,i+10).map((s,k)=>card(s).replace('<article ',`<article ${slotStyle(k,back)} `)).join('')}</div>`)}return out.join('')};
 const PRINT={
   players:{label:'Player cards · A4 sheet',page:'A4',build:arr=>sheets(arr,s=>personalCardHTML(s,arr.length))},
   fronts:{label:'Two-sided cards · fronts',page:'A4',build:arr=>sheets(arr,s=>frontCardHTML(s,arr.length),'FRONTS · print this side first',false)},
@@ -1350,12 +1353,14 @@ function rScores(){if(!S.players.length){$('#s-scores').innerHTML=`<div class="p
    <div class="print-opts no-print" style="align-items:center"><span class="label">Two-sided cards (A4):</span>
      <button class="btn primary" data-action="print-cards" data-mode="fronts">1. ${IN_FRAME?'Save':'Print'} fronts</button>
      <button class="btn primary" data-action="print-cards" data-mode="backs">2. ${IN_FRAME?'Save':'Print'} backs</button>
+     <label class="row" style="gap:6px"><span class="label">Card size on A4</span><select id="sheetfit"><option value="fill" ${(S.settings.sheetFit||'fill')==='fill'?'selected':''}>Fill the page (99 × 56 mm)</option><option value="exact" ${S.settings.sheetFit==='exact'?'selected':''}>Exact bank-card (85.6 × 54 mm)</option></select></label>
      <label class="row" style="gap:6px"><span class="label">Flip the paper on the</span><select id="flip"><option value="long" ${(S.settings.flip||'long')==='long'?'selected':''}>long edge (side)</option><option value="short" ${S.settings.flip==='short'?'selected':''}>short edge (top)</option></select></label></div>
    <div class="print-opts no-print" style="align-items:center"><span class="label">Preview below:</span><button class="btn small ${UI.cview==='two'?'':'primary'}" data-action="cview" data-v="one">One-sided cards</button><button class="btn small ${UI.cview==='two'?'primary':''}" data-action="cview" data-v="two">Two-sided (front, then back)</button></div>
    <p class="label">In the print dialog: paper A4 (or the card size for one-per-page), margins None, scale 100%, and tick Background graphics. Cut along the dashed lines.</p>
    <p class="label" id="save-msg"></p></div>
   ${cardsHTML(arr)}`;
   $('#flip').onchange=e=>{S.settings.flip=e.target.value;save()};
+  $('#sheetfit').onchange=e=>{S.settings.sheetFit=e.target.value;save()};
   fitCards($('#s-scores'));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(S.screen==='scores')fitCards($('#s-scores'))})}
 async function saveCards(mode){const msg=$('#save-msg');const m=PRINT[mode]||PRINT.players;try{const dl=await window.claude?.use?.('downloads');
   if(!dl){msg.textContent='Saving is not available here. Open the site in Chrome to print.';return}
