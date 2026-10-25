@@ -694,7 +694,7 @@ if(!S.settings.audio2){S.settings.voiceOn=false;S.settings.vol=0.6;S.settings.au
 function migrate(){const st=S.settings;if(!Array.isArray(st.vaults))st.vaults=defaults().vaults;
   while(st.vaults.length<st.rooms.length)st.vaults.push({item:'',humans:{answer:'',clues:[]},vampires:{answer:'',clues:[]}});
   st.vaults.forEach(v=>['humans','vampires'].forEach(t=>{if(!v[t])v[t]={answer:'',clues:[]};if(!Array.isArray(v[t].clues))v[t].clues=[]}));
-  if(!st.card)st.card='4x6';if(st.speedMins==null)st.speedMins=15;if(st.speedPts==null)st.speedPts=2}
+  if(!st.card)st.card='4x6';if(st.speedMins==null)st.speedMins=15;if(!st.sheetV2){st.sheetFit='exact';st.sheetV2=true}if(st.speedPts==null)st.speedPts=2}
 migrate();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -1320,7 +1320,7 @@ const cardsHTML=arr=>`<div class="cards">${teamCardHTML(arr)}${arr.map(s=>UI.cvi
 // fixed 2 × 5 grid; each card is pinned to a slot so fronts and backs line up exactly
 const slotStyle=(i,back)=>{let r=Math.floor(i/2),c=i%2;if(back){if((S.settings.flip||'long')==='long')c=1-c;else r=4-r}return `style="grid-row:${r+1};grid-column:${c+1}"`};
 const sheets=(arr,card,tag,back)=>{const out=[];for(let i=0;i<arr.length;i+=10){const pg=Math.floor(i/10)+1,pgs=Math.ceil(arr.length/10);
-  out.push(`<div class="sheet ${(S.settings.sheetFit||'fill')==='fill'?'fill':''}">${tag?`<div class="sheet-tag">${tag}${pgs>1?` · sheet ${pg} of ${pgs}`:''}</div>`:''}${arr.slice(i,i+10).map((s,k)=>card(s).replace('<article ',`<article ${slotStyle(k,back)} `)).join('')}</div>`)}return out.join('')};
+  out.push(`<div class="sheet ${S.settings.sheetFit==='fill'?'fill':''}">${tag?`<div class="sheet-tag">${tag}${pgs>1?` · sheet ${pg} of ${pgs}`:''}</div>`:''}${arr.slice(i,i+10).map((s,k)=>card(s).replace('<article ',`<article ${slotStyle(k,back)} `)).join('')}</div>`)}return out.join('')};
 const PRINT={
   players:{label:'Player cards · A4 sheet',page:'A4',build:arr=>sheets(arr,s=>personalCardHTML(s,arr.length))},
   fronts:{label:'Two-sided cards · fronts',page:'A4',build:arr=>sheets(arr,s=>frontCardHTML(s,arr.length),'FRONTS · print this side first',false)},
@@ -1353,7 +1353,7 @@ function rScores(){if(!S.players.length){$('#s-scores').innerHTML=`<div class="p
    <div class="print-opts no-print" style="align-items:center"><span class="label">Two-sided cards (A4):</span>
      <button class="btn primary" data-action="print-cards" data-mode="fronts">1. ${IN_FRAME?'Save':'Print'} fronts</button>
      <button class="btn primary" data-action="print-cards" data-mode="backs">2. ${IN_FRAME?'Save':'Print'} backs</button>
-     <label class="row" style="gap:6px"><span class="label">Card size on A4</span><select id="sheetfit"><option value="fill" ${(S.settings.sheetFit||'fill')==='fill'?'selected':''}>Fill the page (99 × 56 mm)</option><option value="exact" ${S.settings.sheetFit==='exact'?'selected':''}>Exact bank-card (85.6 × 54 mm)</option></select></label>
+     <label class="row" style="gap:6px"><span class="label">Card size on A4</span><select id="sheetfit"><option value="exact" ${S.settings.sheetFit!=='fill'?'selected':''}>Bank-card size (85.6 × 53.98 mm)</option><option value="fill" ${S.settings.sheetFit==='fill'?'selected':''}>Fill the page (99 × 55.8 mm)</option></select></label>
      <label class="row" style="gap:6px"><span class="label">Flip the paper on the</span><select id="flip"><option value="long" ${(S.settings.flip||'long')==='long'?'selected':''}>long edge (side)</option><option value="short" ${S.settings.flip==='short'?'selected':''}>short edge (top)</option></select></label></div>
    <div class="print-opts no-print" style="align-items:center"><span class="label">Preview below:</span><button class="btn small ${UI.cview==='two'?'':'primary'}" data-action="cview" data-v="one">One-sided cards</button><button class="btn small ${UI.cview==='two'?'primary':''}" data-action="cview" data-v="two">Two-sided (front, then back)</button></div>
    <p class="label">In the print dialog: paper A4 (or the card size for one-per-page), margins None, scale 100%, and tick Background graphics. Cut along the dashed lines.</p>
