@@ -690,7 +690,7 @@ async function shrink(file,png){const bmp=await createImageBitmap(file);const ma
 const crestHTML=t=>ART['crest-'+t]?`<img src="${ART['crest-'+t]}" alt="${TEAM[t].name} crest">`:CREST[t];
 
 /* ---------- state ---------- */
-const HUNT10=[['qr','QR Code','0292','N',''],['morse','Morse Code','5060','I',''],['skull','Skull','8603','G',''],['shadow','Shadow Box','1031','H',''],['clock','Clock','1205','T',''],['eye','Perspective','7825','M',''],['grid','Grid','8225','A',''],['spider','Spider','6832','R','Black Light'],['letter','Letter','7305','E',''],['glow','Glowing Spider','3413','S','']];
+const HUNT10=[['qr','QR Code','0292','N',''],['morse','Morse Code','5060','I',''],['skull','Skull','8603','G',''],['shadow','Shadow Box','1031','H',''],['clock','Clock','1205','T',''],['eye','Perspective','7825','M',''],['grid','Grid','8225','A',''],['spider','Spider','6832','R','Blacklight'],['letter','Letter','7305','E',''],['glow','Glowing Spider','3413','S','']];
 function defBoxes(){return HUNT10.map(([icon,name,code,card,item])=>({icon,name,code,card,item}))}
 function defaults(){return{
   rooms:['Living Room','His Office','Her Office'],
@@ -727,7 +727,7 @@ let S=load()||fresh();
 if(!S.settings.audio2){S.settings.voiceOn=false;S.settings.vol=0.6;S.settings.audio2=true}
 function defHunt(){const team=()=>({boxes:defBoxes(),final:{answer:'NIGHTMARES',prize:'The Heart of the Angel'}});return{humans:team(),vampires:team()}}
 function migrate(){const st=S.settings;
-  if(!st.hunt||!st.hunt.humans)st.hunt=defHunt();st.revealCard=false;
+  if(!st.hunt||!st.hunt.humans)st.hunt=defHunt();st.revealCard=false;['humans','vampires'].forEach(t=>(st.hunt[t].boxes||[]).forEach(b=>{if(/^black ?light$/i.test(String(b.item||'').trim()))b.item='Blacklight'}));
   ['humans','vampires'].forEach(t=>{const h=st.hunt[t];if(!Array.isArray(h.boxes))h.boxes=[];if(!h.final)h.final={answer:'',prize:'The Heart of the Angel'};h.boxes.forEach(b=>{['name','code','card','item','icon'].forEach(k=>{if(b[k]==null)b[k]=''})})});
   if(!st.hunt10){['humans','vampires'].forEach(t=>{const h=st.hunt[t];h.boxes=defBoxes();if(!String(h.final.answer||'').trim())h.final.answer='NIGHTMARES'});
     if(typeof S!=='undefined'&&Array.isArray(S.log))S.log=S.log.filter(e=>!((e.type==='box'||e.type==='clue')&&e.bi!=='final'&&e.bi!=null));st.hunt10=true}if(!Array.isArray(st.vaults))st.vaults=defaults().vaults;
@@ -1097,10 +1097,10 @@ function boxIconSVG(key,t){const c=t==='vampires'?'#c4203a':'#e2aa4c';const B='#
    case 'morse':{const row=(y,pat)=>{let x=12,o='';for(const ch of pat){if(ch==='.'){o+=`<circle cx="${x+5}" cy="${y}" r="5.5" fill="${c}"/>`;x+=18}else{o+=`<rect x="${x}" y="${y-5}" width="22" height="10" rx="5" fill="${c}"/>`;x+=30}}return o};
      return W+`${row(28,'-.-.')}${row(50,'.-..')}${row(72,'--.')}</svg>`}
    case 'skull':return W+`<path d="M50 10C29 10 16 25 16 43c0 11 5 19 12 24v13c0 3 2 5 5 5h34c3 0 5-2 5-5V67c7-5 12-13 12-24 0-18-13-33-34-33z" fill="#e8dfcc" stroke="${c}" stroke-width="3"/><ellipse cx="36" cy="46" rx="9" ry="10" fill="${B}"/><ellipse cx="64" cy="46" rx="9" ry="10" fill="${B}"/><path d="M50 56l-6 10h12z" fill="${B}"/><path d="M38 74v10M46 74v11M54 74v11M62 74v10" stroke="${B}" stroke-width="3"/></svg>`;
-   case 'shadow':return W+`<path d="M18 30l32-16 32 16v40L50 86 18 70z" fill="#2a1a12" stroke="${c}" stroke-width="3" stroke-linejoin="round"/><path d="M18 30l32 16 32-16M50 46v40" stroke="${c}" stroke-width="3" fill="none" stroke-linejoin="round"/><path d="M60 50c0 0 4 2 4 7 0 3-3 4-3 6l5 2 1 10-3 2" fill="none" stroke="${c}" stroke-width="2" opacity=".5"/><g fill="${B}" stroke="${c}" stroke-width="1.2"><circle cx="34" cy="49" r="4"/><path d="M28 72c0-8 2-15 6-17 4 2 6 9 6 17z"/></g><circle cx="86" cy="14" r="6" fill="${c}" opacity=".8"/></svg>`;
+   case 'shadow':return W+`<path d="M14 36l36-16 36 16v42L50 92 14 78z" fill="#2a1a12" stroke="${c}" stroke-width="3" stroke-linejoin="round"/><path d="M14 36l36 16 36-16" fill="#3a2418" stroke="${c}" stroke-width="3" stroke-linejoin="round"/><path d="M14 36l36-16 36 16-36 16z" fill="#3a2418" stroke="${c}" stroke-width="3" stroke-linejoin="round"/><path d="M50 52v40" stroke="${c}" stroke-width="3"/><path d="M33 34l17-7.5 17 7.5-17 7.5z" fill="#050408" stroke="${c}" stroke-width="2" stroke-linejoin="round" transform="translate(50 34) scale(1 .45) translate(-50 -34)"/></svg>`;
    case 'clock':return W+`<circle cx="50" cy="52" r="36" fill="#2a1a12" stroke="${c}" stroke-width="4"/>${Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return `<line x1="${50+29*Math.sin(a)}" y1="${52-29*Math.cos(a)}" x2="${50+33*Math.sin(a)}" y2="${52-33*Math.cos(a)}" stroke="${c}" stroke-width="${i%3?2:4}"/>`}).join('')}<path d="M50 52V30M50 52l14 9" stroke="#e8dfcc" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="52" r="4" fill="${c}"/><path d="M40 12h20M50 12v4" stroke="${c}" stroke-width="4" stroke-linecap="round"/></svg>`;
    case 'eye':return W+`<path d="M4 50L36 34M4 50L36 66M96 50L64 34M96 50L64 66" stroke="${c}" stroke-width="1.5" opacity=".55"/><path d="M14 50C24 32 36 24 50 24s26 8 36 26C76 68 64 76 50 76S24 68 14 50z" fill="#e8dfcc" stroke="${c}" stroke-width="3"/><circle cx="50" cy="50" r="15" fill="${c}"/><circle cx="50" cy="50" r="7" fill="${B}"/><circle cx="55" cy="45" r="3" fill="#fff"/></svg>`;
-   case 'grid':return W+`<rect x="12" y="12" width="76" height="76" rx="4" fill="#2a1a12" stroke="${c}" stroke-width="4"/><path d="M37.3 12v76M62.6 12v76M12 37.3h76M12 62.6h76" stroke="${c}" stroke-width="3"/><rect x="40" y="15" width="20" height="20" fill="${c}" opacity=".7"/><rect x="15" y="65" width="20" height="20" fill="${c}" opacity=".7"/><rect x="65" y="40" width="20" height="20" fill="${c}" opacity=".7"/></svg>`;
+   case 'grid':return W+`${[14,29,44,59,74].map((x,i)=>`<rect x="${x}" y="${i%2?16:10}" width="11" height="${i%2?70:80}" rx="2" fill="${i===2?c:'#2a1a12'}" stroke="${c}" stroke-width="2.5" ${i===2?'opacity=".85"':''}/>`).join('')}</svg>`;
    case 'spider':case 'glow':{const g=key==='glow';const col=g?'#c9a2ff':c;
      const legs=`<g fill="none" stroke="${col}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M42 50L26 38 14 44M42 54L22 52 10 60M44 58L28 66 20 80M46 46L34 26 22 22M58 50L74 38 86 44M58 54L78 52 90 60M56 58L72 66 80 80M54 46L66 26 78 22"/></g>`;
      return W+(g?`<defs><filter id="uvglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="50" cy="52" r="40" fill="#7b3cff" opacity=".18"/><g filter="url(#uvglow)">`:'<g>')+
@@ -1148,7 +1148,7 @@ function vaultTiles(t){const bx=boxesOf(t);
   return `<div class="vhead"><span class="label">Boxes</span>${S.winner?'':`<span class="label">since last box ${sinceHTML(t,'span','since')}</span>`}</div>
    <div class="vaults">${openOrder(t).map(i=>tile(i)).join('')}${Array.from({length:Math.max(0,bx.length-openedCount(t))},()=>tile('?')).join('')}</div>`}
 function cheerText(t,bi){if(bi==='final')return S.winner===t?`Team ${TEAM[t].name} solved the final puzzle, and claims ${itemName(t,'final')||'the Heart'}!`:`Team ${TEAM[t].name} solved the final puzzle.`;
-  const b=boxesOf(t)[bi]||{};const it=itemName(t,bi);return `Team ${TEAM[t].name} opened ${boxName(t,bi)}!${S.settings.revealCard&&b.card?' Their card: '+b.card+'.':''}${it?' And they unlocked '+it+'.':''}${allOpen(t)?' Every box is open. Now unscramble the final word.':''}`}
+  const b=boxesOf(t)[bi]||{};const it=itemName(t,bi);return `Team ${TEAM[t].name} opened ${boxName(t,bi)}!${S.settings.revealCard&&b.card?' Their card: '+b.card+'.':''}${it?' You unlocked the '+it+' item! Collect your '+it+' and letter from the demons.':''}${allOpen(t)?' Every box is open. Now unscramble the final word.':''}`}
 function speedHTML(t,bi){const rt=boxTime(t,bi);if(!rt)return '';const pts=Number(S.settings.speedPts)||0;
   return isFast(rt.ms)&&pts?`<div class="speed fast">Opened in ${fmtDur(rt.ms)}. Under ${fmtDur(speedMs())}: +${pts} bonus point${pts===1?'':'s'} for every ${TEAM[t].one.toLowerCase()}!</div>`
     :`<div class="speed slow">Opened in ${fmtDur(rt.ms)}.</div>`}
@@ -1160,7 +1160,7 @@ function cheerHTML(t,bi){
   const b=boxesOf(t)[bi]||{};const it=itemName(t,bi);const left=boxesOf(t).length-openedCount(t);
   const cardLine=S.settings.revealCard?(b.card?`Their card: <span class="cardval">${esc(b.card)}</span>`:'Their card is waiting with the demons.'):'Collect your letter from the demons.';
   return `${speedHTML(t,bi)}<div class="cheer ${TEAM[t].cls}">Team ${TEAM[t].name} opened ${esc(boxName(t,bi))}!</div>
-   <p class="unlock">${cardLine}${it?`<br>And they unlocked <b>${esc(it)}</b>.`:''}</p>
+   <p class="unlock">${it?`You unlocked the <b>${esc(it)}</b> item!<br>Collect your ${esc(it)} and letter from the demons.`:cardLine}</p>
    <p class="label">${left?`${left} box${left===1?'':'es'} still sealed.`:'Every box is open. Now unscramble the final word!'}</p>
    <div class="row" style="justify-content:center;margin-top:14px"><button class="btn primary" data-action="close-vault">Done</button></div>`}
 function openVault(t,bi){const fin=bi==='final';const sealed=bi==='?';const done=!sealed&&opened(t,bi);const locked=fin&&!done&&!allOpen(t)&&!(UI.vault&&UI.vault.t===t&&UI.vault.bi==='final'&&UI.vault.anyway);
@@ -1257,7 +1257,7 @@ function cluesTab(){const st=S.settings;const pw=UI.showAns?'text':'password';
        <label><span class="label">Icon (shown once opened)</span><select data-hb="${t}|${i}|icon">${BOX_ICONS.map(([k,l])=>`<option value="${k}" ${b.icon===k?'selected':''}>${l}</option>`).join('')}</select></label>
        <label><span class="label">Code that opens it</span><input type="${pw}" autocomplete="new-password" data-hb="${t}|${i}|code" value="${esc(b.code)}"></label>
        <label><span class="label">Card they receive</span><input type="${pw}" autocomplete="new-password" data-hb="${t}|${i}|card" value="${esc(b.card)}" placeholder="e.g. A, 7, piece 3"></label>
-       <label><span class="label">Extra item (optional)</span><input type="text" data-hb="${t}|${i}|item" value="${esc(b.item)}" placeholder="e.g. Black Light"></label>
+       <label><span class="label">Extra item (optional)</span><input type="text" data-hb="${t}|${i}|item" value="${esc(b.item)}" placeholder="e.g. Blacklight"></label>
        <details><summary>Pictures for this box</summary>${artSlotHTML(artKey('box',t,i),'Box icon')}${artSlotHTML(artKey('card',t,i),'Card picture (instead of the text)')}${artSlotHTML(artKey('item',t,i),'Item picture (spins in 3D)')}</details></div>`).join('')}
      <div class="box-ed"><div class="bh"><span>Final puzzle</span>${opened(t,'final')?'<span class="label">solved</span>':''}</div>
        <label><span class="label">Final answer</span><input type="${pw}" autocomplete="new-password" data-hf="${t}|answer" value="${esc(h.final.answer)}"></label>
