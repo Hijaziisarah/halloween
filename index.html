@@ -390,7 +390,7 @@ textarea{width:100%;resize:vertical}
 .modal.wide{width:min(1040px,100%)}
 .modal h2{font-size:2.2rem;margin-bottom:8px}
 .modal .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
-.deal-row{display:grid;grid-template-columns:1.2fr 70px 110px 70px 2fr 30px;gap:6px;align-items:center;margin-bottom:6px}
+.deal-row{display:grid;grid-template-columns:1.2fr 60px 110px 130px 2fr 30px;gap:6px;align-items:center;margin-bottom:6px}
 .deal-row input,.deal-row select{width:100%}
 .ledger-sec{border-top:1px solid var(--edge);padding-top:16px;margin-top:18px}
 .ledger-sec h3{font-size:1.5rem;margin-bottom:8px}
@@ -730,14 +730,21 @@ const crestHTML=t=>ART['crest-'+t]?`<img src="${ART['crest-'+t]}" alt="${TEAM[t]
 /* ---------- state ---------- */
 const HUNT10=[['qr','QR Code','0292','N',''],['morse','Morse Code','5060','I',''],['skull','Skull','8603','G',''],['shadow','Shadow Box','1031','H',''],['clock','Clock','1205','T',''],['eye','Perspective','7825','M',''],['grid','Grid','8225','A',''],['spider','Spider','6832','R','Blacklight'],['letter','Letter','7305','E',''],['glow','Glowing Bat','3413','S','']];
 function defDeals(){return[
-   {id:uid(),name:"Demon's Whisper",cost:2,team:'both',convert:false,desc:'A hint for one of your puzzles.'},
-   {id:uid(),name:"Priest's Absolution",cost:2,team:'humans',convert:true,desc:'Heal a vampire back into a human.'},
-   {id:uid(),name:"Sire's Bite",cost:2,team:'vampires',convert:true,desc:'Turn a human into a vampire.'}]}
+   {id:uid(),name:"Demon's Whisper",cost:1,team:'both',kind:'hint',convert:false,desc:'A hint for one of your puzzles.'},
+   {id:uid(),name:"Priest's Absolution",cost:2,team:'humans',kind:'turn',convert:true,desc:'Heal a vampire back into a human.'},
+   {id:uid(),name:"Sire's Bite",cost:2,team:'vampires',kind:'turn',convert:true,desc:'Turn a human into a vampire.'},
+   {id:uid(),name:'Skeleton Key',cost:3,team:'both',kind:'key',convert:false,desc:'Open one of your boxes without its code.'}]}
+const kindOf=d=>d.kind||(d.convert?'turn':'hint');
+function dealRule(d){const k=kindOf(d),f1=S.settings.freeze1,f2=S.settings.freeze2;
+  if(k==='turn')return 'Both safe: they are turned. One cursed: they choose. Both cursed: the other team takes one of yours.';
+  if(k==='key')return `All safe: the box opens. 1 cursed: it opens, but your team is frozen ${f1} min. 2 cursed: it opens, frozen ${f2} min. All 3 cursed: no box, tokens lost.`;
+  return 'Cursed: no hint, and the token is lost.'}
+function dealGrade(d,c){const k=kindOf(d);if(!c)return 0;if(k==='key')return c>=d.cost?2:1;if(k==='turn')return Math.min(2,c);return 2}
 function defBoxes(){return HUNT10.map(([icon,name,code,card,item])=>({icon,name,code,card,item}))}
 function defaults(){return{
   rooms:['Living Room','His Office','Her Office'],
   base:33,min:15,max:55,whim:0,
-  voiceOn:false,voice:'',rate:0.85,pitch:0.7,vol:0.6,audio2:true,card:'4x6',speedMins:15,speedPts:2,
+  voiceOn:false,voice:'',rate:0.85,pitch:0.7,vol:0.6,audio2:true,card:'4x6',speedMins:5,speedPts:2,speedV5:true,
   vaults:[],hunt:defHunt(),revealCard:false,
   deals:defDeals(),freeze1:3,freeze2:6,
   twists:[
@@ -765,7 +772,7 @@ function migrate(){const st=S.settings;
   ['humans','vampires'].forEach(t=>(st.hunt[t].boxes||[]).forEach(b=>{if(b.icon==='glow'&&/^glowing spider$/i.test(String(b.name).trim()))b.name='Glowing Bat'}));if(!Array.isArray(st.vaults))st.vaults=defaults().vaults;
   while(st.vaults.length<st.rooms.length)st.vaults.push({item:'',humans:{answer:'',clues:[]},vampires:{answer:'',clues:[]}});
   st.vaults.forEach(v=>['humans','vampires'].forEach(t=>{if(!v[t])v[t]={answer:'',clues:[]};if(!Array.isArray(v[t].clues))v[t].clues=[]}));
-  if(!st.card)st.card='4x6';if(st.speedMins==null)st.speedMins=15;if(!st.sheetV2){st.sheetFit='exact';st.sheetV2=true}if(st.speedPts==null)st.speedPts=2;if(!st.dealsV2){st.deals=defDeals();st.dealsV2=true}if(st.freeze1==null)st.freeze1=3;if(st.freeze2==null)st.freeze2=6}
+  if(!st.card)st.card='4x6';if(st.speedMins==null)st.speedMins=15;if(!st.sheetV2){st.sheetFit='exact';st.sheetV2=true}if(st.speedPts==null)st.speedPts=2;if(!st.speedV5){st.speedMins=5;st.speedPts=2;st.speedV5=true}if(!st.dealsV3){st.deals=defDeals();st.dealsV2=st.dealsV3=true}if(st.freeze1==null)st.freeze1=3;if(st.freeze2==null)st.freeze2=6}
 migrate();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
@@ -777,7 +784,7 @@ function risk(t){const m=teamOf(t).length,o=teamOf(other(t)).length;const st=S.s
   let p=o?st.base*(m/o):st.max;p+=Number(st.whim)||0;return Math.round(Math.max(st.min,Math.min(st.max,p)))}
 function addLog(e){e.id=uid();e.t=Date.now();S.log.push(e);save();return e}
 const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
-function resetDeal(){Object.assign(UI,{sel:[],team:'',finders:{},deal:'',target:'',note:''})}
+function resetDeal(){Object.assign(UI,{sel:[],team:'',finders:{},deal:'',target:'',note:'',box:''})}
 
 /* ---------- speech ---------- */
 let voices=[],readingAll=false;
@@ -919,7 +926,7 @@ async function readFrom(i){if(S.screen!=='grimoire')return;if(i!==S.page)await t
 /* ---------- rules ---------- */
 function pips(n,cls){return Array.from({length:n},()=>`<i class="pip ${cls||'t'}"></i>`).join('')}
 function rRules(){const ds=S.settings.deals;
-  const col=(t,label,cls)=>`<div><h4 class="${cls}">${label}</h4>${ds.filter(d=>d.team===t).map(d=>`<div class="price"><span class="pips">${pips(d.cost)}</span><b>${esc(d.name)}</b><span class="d">${esc(d.desc)}${d.convert?' Both safe: they are turned. One cursed: they choose. Both cursed: the other team takes one of yours.':' One cursed: frozen '+S.settings.freeze1+' min. Both cursed: no hint, frozen '+S.settings.freeze2+' min.'}</span></div>`).join('')||'<p class="label">None yet</p>'}</div>`;
+  const col=(t,label,cls)=>`<div><h4 class="${cls}">${label}</h4>${ds.filter(d=>d.team===t).map(d=>`<div class="price"><span class="pips">${pips(d.cost)}</span><b>${esc(d.name)}</b><span class="d">${esc(d.desc)}${' '+dealRule(d)}</span></div>`).join('')||'<p class="label">None yet</p>'}</div>`;
   $('#s-rules').innerHTML=`
   <div class="rules-head"><div class="label">THE RULES OF THE WAGER</div><h1>Two Species, One Heart</h1></div>
   <div class="obj">
@@ -930,28 +937,23 @@ function rRules(){const ds=S.settings.deals;
   </div>
   <div class="rules">
     <section><h3>The Hunt</h3><ol>
-      <li>Each team has its own puzzles hidden in this room, marked in its colour. Some marks only appear under black light.</li>
-      <li>Solve a puzzle and it gives you a code. Bring the code to the demons.</li>
-      <li>The right code opens one of your team's boxes. Inside is a card: a letter, a number or a piece of a puzzle. Some boxes also hold an item you will need, like a black light.</li>
-      <li>Open every box, then use all your cards to solve the final puzzle.</li>
-      ${S.settings.speedMins>0&&S.settings.speedPts>0?`<li>The clock is ticking. Open your next box within ${S.settings.speedMins} minutes of the last one and every member of your team earns ${S.settings.speedPts} bonus point${S.settings.speedPts==1?'':'s'}.</li>`:''}
+      <li>There are puzzles hidden in this room. Solving one gives you a code.</li>
+      <li>Give the code to the demons. The right code opens one of your team's boxes, and you get a letter, and maybe an item.</li>
+      <li>One of the boxes unlocks an item that will help you solve some of the puzzles.</li>
+      <li>The clock is ticking. The faster you solve a puzzle, the more bonus points you get.</li>
       <li>The first team to give the demons the final answer claims the Heart of the Angel.</li></ol></section>
     <section><h3>Tokens &amp; Deals</h3><ul>
       <li>20 tokens are hidden around the house.</li>
-      <li>Trade 2 tokens with the demons for a hint, or to turn a player from the other team.</li>
+      <li>Trade tokens with the demons: 1 for a hint, 2 to turn a player from the other team, 3 to open a box without its code.</li>
       <li>Some tokens are cursed. Nobody knows which until the deal is sealed.</li>
       <li>Tokens are spent once the deal is made. No snatching tokens from other players.</li>
       <li>The demons' word is final.</li></ul>
-      <div class="outcome">
-        <span class="pips"><i class="pip"></i><i class="pip"></i></span><span>Hint: the demons whisper it to you.</span>
-        <span class="pips"><i class="pip"></i><i class="pip c"></i></span><span>Hint: you get it, BUT&hellip; your team is frozen for ${S.settings.freeze1} minutes.</span>
-        <span class="pips"><i class="pip c"></i><i class="pip c"></i></span><span>Hint: no hint, and your team is frozen for ${S.settings.freeze2} minutes.</span>
-      </div></section>
+      <p class="label" style="margin:8px 0 0">Each deal's curses are on the price list.</p></section>
     <section class="prices"><h3>The Demons' Price List</h3><p class="label" style="margin:0 0 10px">Each dot is one token.</p>
       <div class="price-cols">${col('humans','HUMANS ONLY','hum')}${col('both','EITHER TEAM','')}${col('vampires','VAMPIRES ONLY','vam')}</div></section>
   </div>
   <div class="row" style="justify-content:center;margin-top:26px">${S.settings.voiceOn?'<button class="btn" data-action="read-rules">Read the rules aloud</button>':''}<button class="btn primary" data-action="nav" data-to="setup">Summon the players</button></div>`}
-function rulesSpeech(){return `The rules of the wager. Humans: claim the Heart of the Angel and break the curse. Vampires: claim the Heart and walk in daylight forever. Each team has its own puzzles hidden in this room. Solve a puzzle and it gives you a code. Bring the code to the demons, and the right code opens one of your boxes. Inside is a card, and sometimes an item you will need. Open every box, then use your cards to solve the final puzzle. The first team to give the final answer claims the Heart. Twenty tokens are hidden in this house. Trade two of them with the demons for a hint, or to turn a player from the other team. But some tokens are cursed, and a cursed hint freezes your whole team. Choose your deals wisely.`}
+function rulesSpeech(){return `The rules of the wager. Humans: claim the Heart of the Angel and break the curse. Vampires: claim the Heart and walk in daylight forever. There are puzzles hidden in this room. Solving one gives you a code. Give the code to the demons, and the right code opens one of your team's boxes: you get a letter, and maybe an item. One of the boxes unlocks an item that will help you solve some of the puzzles. The clock is ticking. The faster you solve a puzzle, the more bonus points you get. The first team to give the demons the final answer claims the Heart of the Angel. Twenty tokens are hidden in this house. Trade them with the demons: one for a hint, two to turn a player from the other team, three to open a box without its code. But some tokens are cursed. Choose your deals wisely.`}
 
 
 /* ---------- setup ---------- */
@@ -1033,6 +1035,7 @@ function consoleHTML(){const team=UI.team;
   else if(!deal)msg='Choose what they are asking for.';
   else if(deal.cost!==UI.sel.length)msg=`${deal.name} costs ${deal.cost} token${deal.cost>1?'s':''}. ${UI.sel.length} selected.`;
   else if(deal.convert&&!P(UI.target))msg='Choose who they want to turn.';
+  else if(kindOf(deal)==='key'&&(UI.box===''||UI.box==null||opened(team,+UI.box)))msg=boxesOf(team).every((b,i)=>opened(team,i))?'Every box is already open.':'Choose which box to open.';
   const ok=!msg;
   const finderOpts=n=>`<option value="">Whole team</option>`+(team?teamOf(team).map(p=>`<option value="${p.id}" ${UI.finders[n]===p.id?'selected':''}>${esc(p.name)}</option>`).join(''):'');
   return `<div class="console"><div class="label">THE DEAL</div><h3>Strike a Bargain</h3>
@@ -1041,16 +1044,17 @@ function consoleHTML(){const team=UI.team;
     <div class="full"><span class="label">Tokens handed over${UI.sel.length?' · who found each one':''}</span>
       ${UI.sel.length?`<div class="finders" style="margin-top:4px">${UI.sel.map(n=>`<div><b>#${String(n).padStart(2,'0')}</b><select data-finder="${n}" ${team?'':'disabled'}>${finderOpts(n)}</select></div>`).join('')}</div>`:`<div style="margin-top:4px">Click the token eyes above.</div>`}</div>
     <label><span class="label">What they ask for</span><select id="c-deal" ${team?'':'disabled'}><option value="">Choose a deal</option>${list.map(d=>`<option value="${d.id}" ${UI.deal===d.id?'selected':''}>${esc(d.name)} (${d.cost} token${d.cost>1?'s':''})</option>`).join('')}</select></label>
-    ${deal&&deal.convert?`<label><span class="label">Who they want to turn</span><select id="c-target"><option value="">Choose a ${TEAM[other(team)].one.toLowerCase()}</option>${teamOf(other(team)).map(p=>`<option value="${p.id}" ${UI.target===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label>`:'<span></span>'}
+    ${deal&&deal.convert?`<label><span class="label">Who they want to turn</span><select id="c-target"><option value="">Choose a ${TEAM[other(team)].one.toLowerCase()}</option>${teamOf(other(team)).map(p=>`<option value="${p.id}" ${UI.target===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label>`:deal&&kindOf(deal)==='key'?`<label><span class="label">Which box to open</span><select id="c-box"><option value="">Choose the puzzle they're stuck on</option>${boxesOf(team).map((b,i)=>opened(team,i)?'':`<option value="${i}" ${String(UI.box)===String(i)?'selected':''}>${esc(boxName(team,i))}</option>`).join('')}</select></label>`:'<span></span>'}
     <div class="full deal-desc">${deal?esc(deal.desc):''}</div>
-    <label class="full"><span class="label">Their exact request (optional)</span><input type="text" id="c-note" value="${esc(UI.note)}" placeholder="e.g. a hint for the black-light clue"></label>
+    <label class="full"><span class="label">Their exact request (optional)</span><input type="text" id="c-note" value="${esc(UI.note)}" placeholder="e.g. a hint for the clock puzzle"></label>
    </div>
    <div class="row" style="justify-content:space-between;margin-top:14px"><span class="warn">${esc(msg)}</span>
     <div class="row"><button class="btn ghost small" data-action="clear-deal">Clear</button><button class="btn primary" data-action="seal" ${ok?'':'disabled'}>Seal the deal</button></div></div>
   </div>`}
 function bindConsole(){const dl=$('#c-deal'),tg=$('#c-target'),nt=$('#c-note');
-  if(dl)dl.onchange=()=>{UI.deal=dl.value;UI.target='';rBoard()};
+  if(dl)dl.onchange=()=>{UI.deal=dl.value;UI.target='';UI.box='';rBoard()};
   if(tg)tg.onchange=()=>{UI.target=tg.value;rBoard()};
+  const bx=$('#c-box');if(bx)bx.onchange=()=>{UI.box=bx.value;rBoard()};
   if(nt)nt.oninput=()=>{UI.note=nt.value};
   document.querySelectorAll('[data-finder]').forEach(s=>s.onchange=()=>{UI.finders[s.dataset.finder]=s.value})}
 function logText(e){const n=id=>esc(nm(id));
@@ -1058,11 +1062,11 @@ function logText(e){const n=id=>esc(nm(id));
    case 'start':return 'The hunt begins.';
    case 'clue':return `${e.pid?n(e.pid):'The '+TEAM[e.team].name} earned a puzzle point${e.bi!=null?' on '+esc(boxName(e.team,e.bi)):''}.`;
    case 'box':{const a=lastOpenT(e.team,e.t);const ms=a!=null?e.t-a:null;
-     return `The ${TEAM[e.team].name} ${e.bi==='final'?'solved the final puzzle':'opened '+esc(boxName(e.team,e.bi))}${ms!=null?' in '+fmtDur(ms)+(isFast(ms)&&Number(S.settings.speedPts)?' (speed bonus)':''):''}${e.pid?' · '+n(e.pid)+(e.bi==='final'?' gave the answer':' gave the code'):''}.`}
+     return `The ${TEAM[e.team].name} ${e.bi==='final'?'solved the final puzzle':'opened '+esc(boxName(e.team,e.bi))}${ms!=null?' in '+fmtDur(ms)+(isFast(ms)&&Number(S.settings.speedPts)?' (speed bonus)':''):''}${e.pid?' · '+n(e.pid)+(e.bi==='final'?' gave the answer':' gave the code'):''}${e.viaDeal?' · with the Skeleton Key':''}.`}
    case 'advance':return `The ${TEAM[e.team].name} opened a box.`;
    case 'bonus':return `${n(e.pid)} ${e.pts>=0?'earned':'lost'} ${Math.abs(e.pts)} point${Math.abs(e.pts)===1?'':'s'}${e.note?': '+esc(e.note):''}.`;
-   case 'deal':{const res=['completed','through, BUT…','horribly wrong'][e.cursed];const toks=e.tokens.map((t,i)=>'#'+t+(e.finders&&e.finders[i]?' ('+n(e.finders[i])+')':'')).join(' + ');
-     return `The ${TEAM[e.team].name} traded ${toks} for ${esc(e.dealName)}${e.target?' on '+n(e.target):''}. Deal ${res}${e.twist?' ('+esc(e.twist)+')':''}${e.freezeMs?' · frozen '+(+(e.freezeMs/60000).toFixed(1))+' min':''}${e.note?' · “'+esc(e.note)+'”':''}`}
+   case 'deal':{const res=['completed','through, BUT…','horribly wrong'][gradeOf(e)];const toks=e.tokens.map((t,i)=>'#'+t+(e.finders&&e.finders[i]?' ('+n(e.finders[i])+')':'')).join(' + ');
+     return `The ${TEAM[e.team].name} traded ${toks} for ${esc(e.dealName)}${e.target?' on '+n(e.target):''}${e.kind==='key'&&e.keyBox!=null?' on '+esc(boxName(e.team,e.keyBox)):''}. Deal ${res}${e.twist?' ('+esc(e.twist)+')':''}${e.freezeMs?' · frozen '+(+(e.freezeMs/60000).toFixed(1))+' min':''}${e.note?' · “'+esc(e.note)+'”':''}`}
    case 'join':return `${n(e.pid)} arrived late and joined the ${TEAM[e.team].name}.`;
    case 'convert':return `${n(e.pid)} was turned: ${TEAM[e.from].one} → ${TEAM[e.to].one}${e.why?' ('+esc(e.why)+')':''}.`;
    case 'win':return `The ${TEAM[e.team].name} claimed the Heart of the Angel${e.pid?', final answer by '+n(e.pid):''}.`;
@@ -1088,33 +1092,41 @@ setInterval(()=>{const now=Date.now();
 /* ---------- deals & reveal ---------- */
 async function seal(){const team=UI.team;const deal=S.settings.deals.find(d=>d.id===UI.deal);
   const r=risk(team);const toks=UI.sel.slice();const results=toks.map(()=>Math.random()*100<r);const c=results.filter(Boolean).length;
-  const twist='';const fm=deal.convert||!c?0:Math.max(0,Number(c===1?S.settings.freeze1:S.settings.freeze2)||0);const freezeMs=fm*60000;
+  const twist='';const kind=kindOf(deal);const grade=dealGrade(deal,c);
+  const fm=kind==='key'&&grade===1?Math.max(0,Number(c===1?S.settings.freeze1:S.settings.freeze2)||0):0;const freezeMs=fm*60000;
+  const keyBox=kind==='key'?Number(UI.box):null;
   toks.forEach((n,i)=>{const tk=S.tokens.find(t=>t.n===n);tk.status=results[i]?'cursed':'safe'});
   const finders=toks.map(n=>UI.finders[n]||null);
-  const ev=addLog({type:'deal',team,finders,dealId:deal.id,dealName:deal.name,convert:!!deal.convert,target:deal.convert?UI.target:null,tokens:toks,results,cursed:c,twist,freezeMs,note:UI.note,risk:r});
+  const ev=addLog({type:'deal',team,finders,dealId:deal.id,dealName:deal.name,convert:!!deal.convert,target:deal.convert?UI.target:null,tokens:toks,results,cursed:c,grade,kind,keyBox,twist,freezeMs,note:UI.note,risk:r});
+  if(kind==='key'&&grade<2&&!opened(team,keyBox)){addLog({type:'box',team,bi:keyBox,pid:null,viaDeal:ev.id})}
   resetDeal();
   await showReveal(ev,deal)}
+const gradeOf=ev=>ev.grade!=null?ev.grade:Math.min(2,ev.cursed);
 function verdictText(c){return ['Your deal has been successfully completed.','Your deal is through, BUT…','Your deal has gone horribly wrong.'][c]}
 async function showReveal(ev,deal){const box=$('#rv');const ov=$('#reveal');
   const names=[...new Set((ev.finders||[]).filter(Boolean))].map(nm);
   box.innerHTML=`<div class="who">THE ${TEAM[ev.team].name.toUpperCase()}${names.length?' · '+esc(names.join(' & ').toUpperCase()):''} OFFER</div>
    <h2>${esc(deal.name)}${ev.target?' on '+esc(nm(ev.target)):''}</h2>
    <div class="rv-toks">${ev.tokens.map((n,i)=>`<div class="card" id="rc${i}"><div class="in"><div class="f"><span class="eye"><span class="pupil"></span></span><span class="num">TOKEN ${String(n).padStart(2,'0')}</span></div><div class="b ${ev.results[i]?'cursed':'safe'}">${ev.results[i]?'Cursed':'Safe'}<span class="num">TOKEN ${String(n).padStart(2,'0')}</span></div></div></div>`).join('')}</div>
-   <div class="verdict g${ev.cursed}" id="vd">${verdictText(ev.cursed)}</div>
+   <div class="verdict g${gradeOf(ev)}" id="vd">${verdictText(gradeOf(ev))}</div>
    <div class="detail" id="vdet"></div><div class="resolve" id="vres"></div>`;
   ov.hidden=false;
   if(S.settings.voiceOn)speak('The demons consider your offer.');
   await sleep(1600);
   for(let i=0;i<ev.tokens.length;i++){$('#rc'+i).classList.add('flip');await sleep(700);sfx(ev.results[i]?'cursed':'safe');await sleep(600);if(ev.results[i])$('#rc'+i).classList.add('shake')}
-  await sleep(400);$('#vd').classList.add('show');if(ev.cursed===2)sfx('doom');
+  await sleep(400);$('#vd').classList.add('show');if(gradeOf(ev)===2)sfx('doom');
   let det='';const res=$('#vres');const done=`<button class="btn primary" data-action="close-reveal">Done</button>`;
   if(!ev.convert){
     const until=ev.t+(ev.freezeMs||0);const mins=+((ev.freezeMs||0)/60000).toFixed(1);
-    if(ev.cursed===0)det=`${esc(deal.desc)} The demons will whisper it now.`;
-    else if(ev.cursed===1)det=`You get your hint. But the curse binds you: the ${TEAM[ev.team].name} are frozen for ${mins} minute${mins===1?'':'s'}. No moving, no solving.`;
-    else det=`The deal fails and the tokens are lost. And worse: the ${TEAM[ev.team].name} are frozen for ${mins} minute${mins===1?'':'s'}. No moving, no solving.`;
+    const g=gradeOf(ev);
+    if(ev.kind==='key'){const bn=esc(boxName(ev.team,ev.keyBox));
+      if(g===0)det=`The demons turn the key. ${bn} opens.`;
+      else if(g===1)det=`${bn} opens. But the curse binds you: the ${TEAM[ev.team].name} are frozen for ${mins} minute${mins===1?'':'s'}. No moving, no solving.`;
+      else det=`The key snaps in the lock. No box opens, and the tokens are lost.`}
+    else if(g===0)det=`${esc(deal.desc)} The demons will whisper it now.`;
+    else det=`The demons stay silent. No hint, and the token${ev.tokens.length>1?'s are':' is'} lost.`;
     if(ev.freezeMs&&Date.now()<until)det+=`<div class="freeze-big ${TEAM[ev.team].cls}"><span class="label">FROZEN</span><b data-until="${until}" data-team="${ev.team}">${fmtDur(until-Date.now())}</b></div>`;
-    res.innerHTML=done;
+    res.innerHTML=ev.kind==='key'&&g<2?`<button class="btn" data-action="close-reveal">Done</button><button class="btn primary" data-action="key-box" data-team="${ev.team}" data-bi="${ev.keyBox}">Show the box</button>`:done;
   }else{
     const to=ev.team,from=other(ev.team);const tn=P(ev.target);
     if(ev.cursed===0){det=`${esc(tn.name)} is turned and joins the ${TEAM[to].name}.`;movePlayer(tn.id,to,deal.name,ev.id);res.innerHTML=done}
@@ -1123,7 +1135,7 @@ async function showReveal(ev,deal){const box=$('#rv');const ov=$('#reveal');
       res.innerHTML=teamOf(to).map(p=>`<button class="btn" data-action="rebound" data-pid="${p.id}">${esc(p.name)}</button>`).join('');res.dataset.ev=ev.id}
   }
   $('#vdet').innerHTML=det;
-  if(S.settings.voiceOn)speak(verdictText(ev.cursed)+' '+$('#vdet').textContent)}
+  if(S.settings.voiceOn)speak(verdictText(gradeOf(ev))+' '+$('#vdet').textContent)}
 function movePlayer(pid,to,why,dealEv){const p=P(pid);if(!p||p.team===to)return;addLog({type:'convert',pid,from:p.team,to,why,dealEv:dealEv||null});p.team=to;save()}
 function closeReveal(){$('#reveal').hidden=true;hush();rBoard()}
 
@@ -1331,16 +1343,16 @@ function ledger(){const st=S.settings;const mb=$('#modal-box');const keep=$('#mo
   <div class="tabs"><button data-action="ltab" data-tab="deals" aria-current="${tab==='deals'}">Deals, odds &amp; sound</button><button data-action="ltab" data-tab="clues" aria-current="${tab==='clues'}">Clues &amp; boxes</button></div>
   ${tab==='clues'?cluesTab():`
   <div class="ledger-sec"><h3>Deals</h3>
-    <div class="deal-row label"><span>Name</span><span>Tokens</span><span>Team</span><span>Turns?</span><span>What it does</span><span></span></div>
+    <div class="deal-row label"><span>Name</span><span>Tokens</span><span>Team</span><span>Type</span><span>What it does</span><span></span></div>
     <div id="dl-rows">${st.deals.map(d=>`<div class="deal-row" data-did="${d.id}">
-      <input type="text" data-f="name" value="${esc(d.name)}"><select data-f="cost"><option ${d.cost==1?'selected':''}>1</option><option ${d.cost==2?'selected':''}>2</option></select>
+      <input type="text" data-f="name" value="${esc(d.name)}"><select data-f="cost">${[1,2,3,4].map(n=>`<option ${d.cost==n?'selected':''}>${n}</option>`).join('')}</select>
       <select data-f="team"><option value="both" ${d.team==='both'?'selected':''}>Both</option><option value="humans" ${d.team==='humans'?'selected':''}>Humans</option><option value="vampires" ${d.team==='vampires'?'selected':''}>Vampires</option></select>
-      <input type="checkbox" data-f="convert" ${d.convert?'checked':''} aria-label="Turns a player"><input type="text" data-f="desc" value="${esc(d.desc)}">
+      <select data-f="kind" aria-label="What it does">${[['hint','Hint'],['turn','Turn a player'],['key','Open a box']].map(([k,l])=>`<option value="${k}" ${kindOf(d)===k?'selected':''}>${l}</option>`).join('')}</select><input type="text" data-f="desc" value="${esc(d.desc)}">
       <button class="btn ghost small" data-action="rm-deal" data-id="${d.id}" aria-label="Delete">×</button></div>`).join('')}</div>
     <button class="btn small" data-action="add-deal">Add a deal</button>
-    <p class="label">“Turns?” makes it a conversion deal: both safe turns the target, one cursed lets the target choose, both cursed lets the other team take one of yours.</p></div>
-  <div class="ledger-sec"><h3>Cursed hints</h3><p class="label" style="margin-top:0">Deals that don't turn a player freeze the team when tokens are cursed. A countdown shows on the hunt board, and the site announces when they can move again.</p>
-    <div class="fgrid"><label><span class="label">One cursed token: frozen for (minutes)</span><input type="number" min="0" step="0.5" data-st="freeze1" value="${st.freeze1}"></label><label><span class="label">Both cursed: frozen for (minutes)</span><input type="number" min="0" step="0.5" data-st="freeze2" value="${st.freeze2}"></label></div></div>
+    <p class="label">Hint: cursed means no hint. Turn a player: both safe turns the target, one cursed lets the target choose, both cursed lets the other team take one of yours. Open a box: you pick the box; some cursed tokens freeze the team, all cursed means no box.</p></div>
+  <div class="ledger-sec"><h3>Skeleton Key freezes</h3><p class="label" style="margin-top:0">When the box deal goes through with cursed tokens, the team is frozen. A countdown shows on the hunt board, and the site announces when they can move again.</p>
+    <div class="fgrid"><label><span class="label">1 cursed: frozen for (minutes)</span><input type="number" min="0" step="0.5" data-st="freeze1" value="${st.freeze1}"></label><label><span class="label">2 cursed: frozen for (minutes)</span><input type="number" min="0" step="0.5" data-st="freeze2" value="${st.freeze2}"></label></div></div>
   <div class="ledger-sec"><h3>Curse odds (hidden from players)</h3><p class="label" style="margin-top:0">Risk per token = base × (team size ÷ other team size), kept between the floor and the ceiling, plus the Demon's Whim. Right now: Humans ${risk('humans')}%, Vampires ${risk('vampires')}%.</p>
     <div class="fgrid" style="grid-template-columns:repeat(4,minmax(0,1fr))"><label><span class="label">Base %</span><input type="number" data-st="base" value="${st.base}"></label><label><span class="label">Floor %</span><input type="number" data-st="min" value="${st.min}"></label><label><span class="label">Ceiling %</span><input type="number" data-st="max" value="${st.max}"></label><label><span class="label">Demon's Whim</span><input type="number" data-st="whim" value="${st.whim}"></label></div></div>
   <div class="ledger-sec"><h3>Your artwork</h3><p class="label" style="margin-top:0">Upload your own designs (box icons, cards and items are under Clues &amp; boxes). They are kept in this browser, so upload them on the laptop you'll use at the party.</p>
@@ -1368,7 +1380,7 @@ function ledger(){const st=S.settings;const mb=$('#modal-box');const keep=$('#mo
     else if(t.dataset.hb){const [tm,i,f]=t.dataset.hb.split('|');const b=st.hunt[tm].boxes[+i];if(b)b[f]=t.value}
     else if(t.dataset.hf){const [tm,f]=t.dataset.hf.split('|');st.hunt[tm].final[f]=t.value}
     else if(t.dataset.st){st[t.dataset.st]=Number(t.value)}
-    else if(t.dataset.f){const id=t.closest('.deal-row').dataset.did;const d=st.deals.find(x=>x.id===id);const f=t.dataset.f;d[f]=f==='convert'?t.checked:f==='cost'?Number(t.value):t.value}
+    else if(t.dataset.f){const id=t.closest('.deal-row').dataset.did;const d=st.deals.find(x=>x.id===id);const f=t.dataset.f;d[f]=f==='cost'?Number(t.value):t.value;if(f==='kind')d.convert=t.value==='turn'}
     else if(t.id==='tw')st.twists=t.value.split('\n').map(s=>s.trim()).filter(Boolean)
     else if(t.id==='vsel')st.voice=t.value
     else if(t.id==='vOn')st.voiceOn=t.checked
@@ -1558,7 +1570,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');
     save();go('board');break}
   case 'pick':{const id=b.dataset.pid;UI.picked=UI.picked===id?null:id;S.screen==='board'?rBoard():rSetup();break}
   case 'move-here':{const id=UI.picked;UI.picked=null;handleDrop(id,b.dataset.team);break}
-  case 'tok':{const n=+b.dataset.n;if(UI.sel.includes(n)){UI.sel=UI.sel.filter(x=>x!==n);delete UI.finders[n]}else{if(UI.sel.length>=2){delete UI.finders[UI.sel.shift()]}UI.sel.push(n)}rBoard();break}
+  case 'tok':{const n=+b.dataset.n;if(UI.sel.includes(n)){UI.sel=UI.sel.filter(x=>x!==n);delete UI.finders[n]}else{const mx=Math.max(1,...S.settings.deals.map(d=>Number(d.cost)||1));if(UI.sel.length>=mx){delete UI.finders[UI.sel.shift()]}UI.sel.push(n)}rBoard();break}
   case 'deal-team':UI.team=b.dataset.team;UI.finders={};UI.deal='';UI.target='';rBoard();break;
   case 'clear-deal':resetDeal();rBoard();break;
   case 'seal':seal();break;
@@ -1569,6 +1581,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');
   case 'rebound':{const ev=S.log.find(x=>x.id===$('#vres').dataset.ev);const p=P(b.dataset.pid);movePlayer(p.id,other(ev.team),'cursed '+ev.dealName,null);
     $('#vdet').textContent=`${p.name} is taken by the ${TEAM[other(ev.team)].name}.`;$('#vres').innerHTML=`<button class="btn primary" data-action="close-reveal">Done</button>`;if(S.settings.voiceOn)speak($('#vdet').textContent);break}
   case 'close-reveal':closeReveal();break;
+  case 'key-box':{$('#reveal').hidden=true;hush();openVault(b.dataset.team,+b.dataset.bi);break}
   case 'vault':openVault(b.dataset.team,b.dataset.bi==='final'||b.dataset.bi==='?'?b.dataset.bi:+b.dataset.bi);break;
   case 'clue-add':{if(!UI.vault)break;const {t,bi}=UI.vault;addLog({type:'clue',pid:b.dataset.pid,team:t,bi});sfx('tick');vaultSide();const n=$('#fn-'+b.dataset.pid);if(n){n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump')}break}
   case 'clue-all':{if(!UI.vault)break;const {t,bi}=UI.vault;teamOf(t).forEach(p=>addLog({type:'clue',pid:p.id,team:t,bi}));sfx('tick');vaultSide();break}
@@ -1595,7 +1608,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');
   case 'm-claim':{const t=$('#m-team').value;const pid=$('#m-p').value||null;S.log=S.log.filter(x=>x.type!=='win');addLog({type:'win',team:t,pid});S.winner=t;S.heartBy=pid;save();closeModal();go('victory');break}
   case 'speak-vic':{const v=VIC[S.winner];speak(v.title+'. '+v.lines.join(' '));break}
   case 'rm-log':{const id=b.dataset.id;if(UI.rmArm!==id){UI.rmArm=id;rBoard();break}UI.rmArm=null;const ev=S.log.find(x=>x.id===id);
-    if(ev.type==='deal')ev.tokens.forEach(n=>{const tk=S.tokens.find(t=>t.n===n);if(tk)tk.status='hidden'});
+    if(ev.type==='deal'){ev.tokens.forEach(n=>{const tk=S.tokens.find(t=>t.n===n);if(tk)tk.status='hidden'});S.log=S.log.filter(x=>x.viaDeal!==ev.id)}
     if(ev.type==='advance')S.phase[ev.team]=ev.from;
     if(ev.type==='box'&&ev.bi==='final'&&S.winner===ev.team){S.log=S.log.filter(x=>x.type!=='win');S.winner=null;S.heartBy=null}
     if(ev.type==='convert'){const p=P(ev.pid);if(p)p.team=ev.from}
@@ -1604,7 +1617,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');
     S.log=S.log.filter(x=>x.id!==id);save();rBoard();break}
   case 'ledger':UI.resetArm=false;ledger();break;
   case 'close-ledger':closeModal();render();break;
-  case 'add-deal':S.settings.deals.push({id:uid(),name:'New deal',cost:1,team:'both',convert:false,desc:''});save();ledger();break;
+  case 'add-deal':S.settings.deals.push({id:uid(),name:'New deal',cost:1,team:'both',kind:'hint',convert:false,desc:''});save();ledger();break;
   case 'rm-deal':S.settings.deals=S.settings.deals.filter(d=>d.id!==b.dataset.id);save();ledger();break;
   case 'rm-art':artDel(b.dataset.k).then(ledger);break;
   case 'test-voice':speak('Every deal has a price.');break;
