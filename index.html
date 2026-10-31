@@ -774,6 +774,7 @@ function migrate(){const st=S.settings;
   st.vaults.forEach(v=>['humans','vampires'].forEach(t=>{if(!v[t])v[t]={answer:'',clues:[]};if(!Array.isArray(v[t].clues))v[t].clues=[]}));
   if(!st.card)st.card='4x6';if(st.speedMins==null)st.speedMins=15;if(!st.sheetV2){st.sheetFit='exact';st.sheetV2=true}if(st.speedPts==null)st.speedPts=2;if(!st.speedV5){st.speedMins=5;st.speedPts=2;st.speedV5=true}if(!st.dealsV3){st.deals=defDeals();st.dealsV2=st.dealsV3=true}if(st.freeze1==null)st.freeze1=3;if(st.freeze2==null)st.freeze2=6}
 migrate();
+S.log=S.log.filter(e=>!(e.type==='clue'&&e.bi==='?'));
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
 const UI={ltab:'deals',showAns:false,vault:null,clueCtx:null,sel:[],team:'',finders:{},deal:'',target:'',note:'',picked:null,rmArm:null,resetArm:false,turning:false};
@@ -1202,7 +1203,7 @@ function vaultSideHTML(t,bi){const n=cluesIn(t,bi).length;
    <div class="prog">${n} point${n===1?'':'s'} given for this box</div>
    <button class="btn small finder-all" data-action="clue-all">Whole team effort: +1 each</button>
    ${teamOf(t).map(p=>{const c=cluesIn(t,bi,p.id).length;return `<div class="finder"><button class="add" data-action="clue-add" data-pid="${p.id}" aria-label="Give ${esc(p.name)} a point, ${c} so far"><span>${esc(p.name)}</span><span class="n ${c?'has':''}" id="fn-${p.id}">${c}</span></button><button class="sub" data-action="clue-sub" data-pid="${p.id}" ${c?'':'disabled'} aria-label="Take a point off ${esc(p.name)}">−</button></div>`}).join('')||'<p class="label">No players on this team.</p>'}
-   <p class="hint">Click a name once for each point: whoever found or solved this puzzle. Several people can share it. Use − to undo.</p>`}
+   <p class="hint">Click a name once for each point: whoever found or solved this puzzle. Several people can share it. Use − to undo.${bi==='?'?' Points only count if the right code opens a box. A wrong code or Cancel wipes them.':''}</p>`}
 function vaultSide(){if(!UI.vault)return;const el=$('#vt-side');if(el)el.innerHTML=vaultSideHTML(UI.vault.t,UI.vault.bi)}
 function vaultTiles(t){const bx=boxesOf(t);
   const tile=(bi)=>{const done=opened(t,bi),fin=bi==='final',ready=fin&&!done&&allOpen(t);const rt=boxTime(t,bi);const it=itemName(t,bi);
@@ -1250,7 +1251,8 @@ function tryVault(){if(!UI.vault)return;const {t,bi}=UI.vault;const inp=$('#vt-a
   if(bi==='?'){const hit=boxesOf(t).findIndex(b=>norm(b.code)&&norm(b.code)===norm(a));
     if(hit>=0&&!opened(t,hit)){unlockVault(hit);return}
     const c=$('#chest');c.classList.remove('zoom','shake');void c.offsetWidth;c.classList.add('shake');sfx('deny');
-    $('#vt-err').textContent=hit>=0?'That box has already been opened.':pick(['The box stays sealed.','Wrong. The demons are laughing.','That is not the code. Try again.']);inp.value='';inp.focus();return}
+    const lost=hit>=0?0:dropPending(t);if(lost)vaultSide();
+    $('#vt-err').textContent=(hit>=0?'That box has already been opened.':pick(['The box stays sealed.','Wrong. The demons are laughing.','That is not the code. Try again.']))+(lost?` No points: the ${lost} point${lost===1?'':'s'} given here ${lost===1?'was':'were'} cancelled.`:'');inp.value='';inp.focus();return}
   const ans=bi==='final'?HB(t).final.answer:(boxesOf(t)[bi]||{}).code;
   if(norm(ans)&&norm(a)===norm(ans)){unlockVault();return}
   const c=$('#chest');c.classList.remove('zoom','shake');void c.offsetWidth;c.classList.add('shake');sfx('deny');
@@ -1273,7 +1275,8 @@ async function unlockVault(hit){if(!UI.vault)return;const t=UI.vault.t;let bi=UI
   await sleep(2600);if($('#vault').hidden||!UI.vault||UI.vault.t!==t||UI.vault.bi!==bi)return;
   $('#vt-main').innerHTML=cheerHTML(t,bi);requestAnimationFrame(()=>{const ch=$('#vt-main .cheer');if(ch)ch.classList.add('show')});sfx('dawn');
   if(S.settings.voiceOn){const rt=boxTime(t,bi);speak(cheerText(t,bi)+(rt&&isFast(rt.ms)&&Number(S.settings.speedPts)?' And they were fast enough for the bonus.':''))}}
-function closeVault(){$('#vault').hidden=true;UI.vault=null;hush();if(S.screen==='board')rBoard()}
+function dropPending(t){const n=S.log.length;S.log=S.log.filter(e=>!(e.type==='clue'&&e.bi==='?'&&(t==null||e.team===t)));if(S.log.length!==n)save();return n-S.log.length}
+function closeVault(){$('#vault').hidden=true;if(UI.vault&&UI.vault.bi==='?')dropPending(UI.vault.t);UI.vault=null;hush();if(S.screen==='board')rBoard()}
 
 /* ---------- modals ---------- */
 function modal(html,wide){$('#modal-box').className='modal'+(wide?' wide':'');$('#modal-box').innerHTML=html;$('#modal').hidden=false}
