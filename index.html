@@ -361,6 +361,22 @@ textarea{width:100%;resize:vertical}
 #s-board .warn{font-size:1.02rem}
 #s-board .log h3{font-size:2rem}
 #s-board .log li{font-size:1.05rem}
+/* wide TV layout: five boxes per row, tighter tokens, players in two columns */
+#s-board{max-width:min(2200px,97vw)}
+#s-board .board{grid-template-columns:minmax(0,1.2fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:16px}
+#s-board .vaults{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0 12px}
+#s-board .vbox{padding:6px 3px 5px;gap:1px}
+#s-board .vbox .ico{max-width:58px}
+#s-board .vbox .rm-name{font-size:.86rem;letter-spacing:0;overflow-wrap:normal}
+#s-board .vbox .st{font-size:.8rem}
+#s-board .vbox .clock{font-size:.85rem}
+#s-board .vbox.sealed .st{display:none}
+#s-board .tokens{gap:8px 10px;padding:14px}
+#s-board .eye{max-width:60px}
+#s-board .tok .num{font-size:.95rem}
+#s-board .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+#s-board .chip{padding:.35em .7em;min-width:0}
+#s-board .chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* MODAL + REVEAL */
 .overlay{position:fixed;inset:0;z-index:60;background:rgba(5,4,8,.82);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));overflow:auto}
